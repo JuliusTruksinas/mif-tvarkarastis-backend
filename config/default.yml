@@ -1,0 +1,5 @@
+server:
+  port: 3000
+
+db:
+  mongoUri: 'mongodb://localhost:27017/mifTvarkarastisDb'
