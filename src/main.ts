@@ -1,12 +1,24 @@
-import express, { Request, Response } from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
+import mongoose from 'mongoose';
+import app from './app';
+import logger from './logger';
 
-const app = express();
-const port = 3000;
+const PORT = process.env.PORT ?? 3000;
+const MONGO_URI = process.env.MONGO_URI ?? 'mongodb://localhost:27017/db';
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, World!');
-});
+async function bootstap() {
+  try {
+    await mongoose.connect(
+      MONGO_URI.replace('<DB_PASSWORD>', process.env.DB_PASSWORD as string),
+    );
+  } catch (e) {
+    logger.error('Failed to connect to the DB!');
+  }
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+  app.listen(PORT, () => {
+    logger.info(`Server is running on port ${PORT}`);
+  });
+}
+
+bootstap();
