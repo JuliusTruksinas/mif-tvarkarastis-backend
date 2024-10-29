@@ -4,6 +4,7 @@ import { RegisterDto } from './dto/register-dto';
 import { login, register } from './auth.handler';
 import { LoginDto } from './dto/login-dto';
 
+
 const authRoutes = express.Router();
 
 authRoutes.post('/register', validateDto(RegisterDto), register);
