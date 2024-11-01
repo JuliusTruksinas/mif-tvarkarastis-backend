@@ -21,7 +21,8 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 export const register = catchAsync(async (req, res, next) => {
-  const { email, password }: RegisterDto = req.body;
+  const { email, password, group, subGroup, programName }: RegisterDto =
+    req.body;
 
   const foundUser = await User.findOne({ email });
 
@@ -36,6 +37,9 @@ export const register = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     email,
     password: hashedPassword,
+    group,
+    subGroup,
+    programName,
   });
 
   createSendToken(newUser, 201, res);

@@ -2,36 +2,37 @@ import {
   IsEmail,
   IsNotEmpty,
   IsString,
-  MinLength,
   MaxLength,
+  MinLength,
   IsNumber,
+  IsOptional,
 } from 'class-validator';
 
-export class RegisterDto {
-  @IsNotEmpty()
+export class ChangeUserInfoDto {
+  @IsOptional()
   @IsString()
   @IsEmail({}, { message: 'Please provide a valid email address' })
   @MaxLength(100, { message: 'Why the fck do you have such a long email' })
-  email: string;
+  email?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   @MaxLength(100, { message: 'password cannot be longer than 100 characters' })
-  password: string;
+  password?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @MaxLength(100, {
     message: 'Program name should not be longer than 100 characters',
   })
-  programName: string;
+  programName?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  group: number;
+  group?: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  subGroup: number;
+  subGroup?: number;
 }
