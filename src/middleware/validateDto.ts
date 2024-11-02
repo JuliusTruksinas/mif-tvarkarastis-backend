@@ -3,6 +3,7 @@ import { validate } from 'class-validator';
 import { Request, Response, NextFunction } from 'express';
 import { catchAsync } from '../utils/catchAsync';
 import AppError from '../utils/appError';
+import { errorMessages } from '../constants/errorMessages';
 
 export const validateDto = (dtoClass: any) =>
   catchAsync(
@@ -19,9 +20,9 @@ export const validateDto = (dtoClass: any) =>
       for (const error of errors) {
         validationErrors[error.property] = error.constraints
           ? Object.values(error.constraints).join(', ')
-          : 'Invalid user input';
+          : errorMessages.invalidInput;
       }
 
-      next(new AppError('Invalid input', 400, validationErrors));
+      next(new AppError(errorMessages.invalidInput, 400, validationErrors));
     },
   );

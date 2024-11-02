@@ -3,15 +3,14 @@ import { promisify } from 'util';
 import { catchAsync } from '../utils/catchAsync';
 import { User } from '../user/user.model';
 import AppError from '../utils/appError';
+import { errorMessages } from '../constants/errorMessages';
 
 export const protect = catchAsync(async (req, res, next) => {
   if (
     !req.headers.authorization ||
     !req.headers.authorization.startsWith('Bearer')
   ) {
-    return next(
-      new AppError('You are not logged in. Please log in to get access', 400),
-    );
+    return next(new AppError(errorMessages.notLoggedIn, 400));
   }
 
   const token = req.headers.authorization.split(' ')[1];
@@ -21,12 +20,7 @@ export const protect = catchAsync(async (req, res, next) => {
   const currentUser = await User.findById(decoded.id);
 
   if (!currentUser) {
-    return next(
-      new AppError(
-        'The user belonging to this token does no longer exist',
-        401,
-      ),
-    );
+    return next(new AppError(errorMessages.loggedInUserNotFound, 401));
   }
 
   req.user = currentUser;
