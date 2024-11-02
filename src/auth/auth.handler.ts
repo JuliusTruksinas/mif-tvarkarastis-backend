@@ -6,7 +6,6 @@ import { RegisterDto } from './dto/request/register.dto';
 import { catchAsync } from '../utils/catchAsync';
 import AppError from '../utils/appError';
 import { LoginDto } from './dto/request/login.dto';
-import { errorMessages } from '../constants/errorMessages';
 
 const signToken = (id: mongoose.Types.ObjectId) => {
   return jwt.sign({ id }, process.env.JWT_SECRET);
@@ -29,10 +28,7 @@ export const register = catchAsync(async (req, res, next) => {
 
   if (foundUser) {
     return next(
-      new AppError(
-        errorMessages.emailAlreadyExists.replace(':email', email),
-        400,
-      ),
+      new AppError(`The user with email: ${email} already exists`, 400),
     );
   }
 
@@ -54,17 +50,14 @@ export const login = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new AppError(
-        errorMessages.emailAlreadyExists.replace(':email', email),
-        400,
-      ),
+      new AppError(`The user with email: ${email} does not exist`, 400),
     );
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
   if (!isPasswordCorrect) {
-    return next(new AppError(errorMessages.incorrectPassword, 401));
+    return next(new AppError('Incorrect password', 401));
   }
 
   createSendToken(user, 200, res);
