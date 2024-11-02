@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 import { IUser } from './user.types';
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -8,7 +9,6 @@ const userSchema = new mongoose.Schema<IUser>({
     unique: true,
     lowercase: true,
     maxlength: 100,
-    
   },
   password: {
     type: String,
@@ -17,22 +17,27 @@ const userSchema = new mongoose.Schema<IUser>({
     minlength: 6,
     maxlength: 100,
   },
-  programName:{
+  programName: {
     type: String,
     required: true,
-    IsString: true,
     maxlength: 100,
   },
-  group:{
+  group: {
     type: Number,
     required: true,
-    IsNumber: true,
   },
-  subGroup:{
+  subGroup: {
     type: Number,
     required: true,
-    IsNumber: true, 
-  }
+  },
+});
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+
+  this.password = await bcrypt.hash(this.password, 12);
+
+  next();
 });
 
 // TODO: add english group and subGroup

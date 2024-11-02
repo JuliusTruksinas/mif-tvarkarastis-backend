@@ -1,6 +1,6 @@
 import express from 'express';
 import { validateDto } from '../middleware/validateDto';
-import { ChangeUserInfoDto } from './dto/change-user-info-dto';
+import { ChangeUserInfoDto } from './dto/request/change-user-info.dto';
 import { protect } from '../middleware/protect';
 import { changeUserInfo } from './user.handler';
 
