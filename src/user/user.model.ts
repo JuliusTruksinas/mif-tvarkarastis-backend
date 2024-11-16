@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema<IUser>({
     type: Number,
     required: true,
   },
+  events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserEvent' }],
 });
 
 userSchema.pre('save', async function (next) {

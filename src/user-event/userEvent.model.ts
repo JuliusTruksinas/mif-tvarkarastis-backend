@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { IUserEvent } from './userEvent.types';
-import { maxLength, minLength } from 'class-validator';
 
 const userEventSchema = new mongoose.Schema<IUserEvent>({
   startDateTime: {
@@ -29,6 +28,7 @@ const userEventSchema = new mongoose.Schema<IUserEvent>({
     maxLength: 100,
     minLength: 1,
   },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 export const UserEvent = mongoose.model<IUserEvent>(
