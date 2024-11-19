@@ -12,6 +12,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/user-events', userEventRoutes);
+app.use('/api/user-events', userEventRoutes);
 
 app.all('*', (req, res, next) => {
   next(
