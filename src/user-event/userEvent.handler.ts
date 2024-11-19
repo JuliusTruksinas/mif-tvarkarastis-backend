@@ -1,4 +1,3 @@
-import app from '../app';
 import AppError from '../utils/appError';
 import { catchAsync } from '../utils/catchAsync';
 import { CreateUserEventDto } from './dto/request/create-user-event.dto';
@@ -32,7 +31,9 @@ export const updateUserEvent = catchAsync(async (req, res, next) => {
   const userEvent = await UserEvent.findById(userEventId);
 
   if (!userEvent) {
-    return next(new AppError('User event with provided ID doesnt exist', 400));
+    return next(
+      new AppError('User event with provided ID does not exist', 400),
+    );
   }
 
   for (const key of Object.keys(updateUserEventDto)) {
@@ -43,5 +44,22 @@ export const updateUserEvent = catchAsync(async (req, res, next) => {
   res.json({
     status: 'success',
     data: new UpdateUserEventResponseDto(updatedUserEvent),
+  });
+});
+
+export const deleteUserEvent = catchAsync(async (req, res, next) => {
+  const { userEventId } = req.params;
+  const userEvent = await UserEvent.findById(userEventId);
+  if (!userEvent) {
+    return next(
+      new AppError('User event with provided ID does not exist', 400),
+    );
+  }
+
+  await UserEvent.findOneAndDelete({ _id: userEventId });
+
+  res.json({
+    status: 'success',
+    data: null,
   });
 });
