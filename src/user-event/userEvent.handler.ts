@@ -1,9 +1,21 @@
+import { ResponseStatus } from '../constants/responseStatus';
 import AppError from '../utils/appError';
 import { catchAsync } from '../utils/catchAsync';
+import { transformMongoDbObjectId } from '../utils/transformMongoDbObjectId';
 import { CreateUserEventDto } from './dto/request/create-user-event.dto';
 import { UpdateUserEventDto } from './dto/request/update-user-event.dto';
+import { CreateUserEventResponseDto } from './dto/response/create-user-event-response.dto';
 import { UpdateUserEventResponseDto } from './dto/response/update-user-event-response-dto';
 import { UserEvent } from './userEvent.model';
+
+export const fetchUserEvents = catchAsync(async (req, res, next) => {
+  const userEvents = await UserEvent.find({}).lean();
+
+  res.json({
+    status: ResponseStatus.SUCESS,
+    data: userEvents.map((userEvent) => transformMongoDbObjectId(userEvent)),
+  });
+});
 
 export const createUserEvent = catchAsync(async (req, res, next) => {
   const {
@@ -22,7 +34,10 @@ export const createUserEvent = catchAsync(async (req, res, next) => {
     location,
     user: req.user,
   });
-  res.json({ status: 'success', data: { id: createdUserEvent._id } });
+  res.json({
+    status: ResponseStatus.SUCESS,
+    data: new CreateUserEventResponseDto(createdUserEvent),
+  });
 });
 
 export const updateUserEvent = catchAsync(async (req, res, next) => {
@@ -42,7 +57,7 @@ export const updateUserEvent = catchAsync(async (req, res, next) => {
 
   const updatedUserEvent = await userEvent.save();
   res.json({
-    status: 'success',
+    status: ResponseStatus.SUCESS,
     data: new UpdateUserEventResponseDto(updatedUserEvent),
   });
 });
@@ -59,7 +74,7 @@ export const deleteUserEvent = catchAsync(async (req, res, next) => {
   await UserEvent.findOneAndDelete({ _id: userEventId });
 
   res.json({
-    status: 'success',
+    status: ResponseStatus.SUCESS,
     data: null,
   });
 });

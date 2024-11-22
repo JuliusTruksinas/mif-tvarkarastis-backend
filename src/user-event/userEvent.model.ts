@@ -16,7 +16,7 @@ const userEventSchema = new mongoose.Schema<IUserEvent>({
     maxlength: 200,
     minlength: 1,
   },
-  notes: {
+  note: {
     type: String,
     required: false,
     maxLength: 2000,

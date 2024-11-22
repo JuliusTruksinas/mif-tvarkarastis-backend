@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import authRoutes from './auth/auth.routes';
 import AppError from './utils/appError';
 import { globalErrorHandler } from './error/error.handler';
@@ -7,6 +8,7 @@ import userEventRoutes from './user-event/userEvent.routes';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
