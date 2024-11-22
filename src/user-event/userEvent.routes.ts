@@ -5,11 +5,14 @@ import { validateDto } from '../middleware/validateDto';
 import {
   createUserEvent,
   deleteUserEvent,
+  fetchUserEvents,
   updateUserEvent,
 } from './userEvent.handler';
 import { UpdateUserEventDto } from './dto/request/update-user-event.dto';
 
 const userEventRoutes = express.Router();
+
+userEventRoutes.get('', protect, fetchUserEvents);
 
 userEventRoutes.post(
   '',
@@ -24,6 +27,7 @@ userEventRoutes.patch(
   validateDto(UpdateUserEventDto),
   updateUserEvent,
 );
+
 userEventRoutes.delete('/:userEventId', protect, deleteUserEvent);
 
 export default userEventRoutes;

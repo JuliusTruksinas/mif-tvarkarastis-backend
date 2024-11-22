@@ -6,6 +6,7 @@ import { RegisterDto } from './dto/request/register.dto';
 import { catchAsync } from '../utils/catchAsync';
 import AppError from '../utils/appError';
 import { LoginDto } from './dto/request/login.dto';
+import { ResponseStatus } from '../constants/responseStatus';
 
 const signToken = (id: mongoose.Types.ObjectId) => {
   return jwt.sign({ id }, process.env.JWT_SECRET);
@@ -15,7 +16,7 @@ const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
 
   res.status(statusCode).json({
-    status: 'success',
+    status: ResponseStatus.SUCESS,
     token,
   });
 };
