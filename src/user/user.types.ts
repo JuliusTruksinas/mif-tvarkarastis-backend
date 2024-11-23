@@ -1,8 +1,9 @@
 import mongoose, { Document } from 'mongoose';
-import { IUserEvent } from '../user-event/userEvent.types';
 
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   programName: string;

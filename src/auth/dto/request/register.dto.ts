@@ -10,6 +10,16 @@ import {
 export class RegisterDto {
   @IsNotEmpty()
   @IsString()
+  @MaxLength(100)
+  firstName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(100)
+  lastName: string;
+
+  @IsNotEmpty()
+  @IsString()
   @IsEmail()
   @MaxLength(100)
   email: string;
