@@ -6,13 +6,13 @@ export class ChangeUserInfoResponseDto {
   email: string;
   programName: string;
   group: number;
-  subGroup: number;
+  subgroup: number;
 
   constructor(user: IUser) {
     this.id = user._id;
     this.email = user.email;
     this.programName = user.programName;
     this.group = user.group;
-    this.subGroup = user.subGroup;
+    this.subgroup = user.subgroup;
   }
 }

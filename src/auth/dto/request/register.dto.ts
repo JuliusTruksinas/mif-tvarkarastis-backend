@@ -31,5 +31,5 @@ export class RegisterDto {
 
   @IsNotEmpty()
   @IsNumber()
-  subGroup: number;
+  subgroup: number;
 }

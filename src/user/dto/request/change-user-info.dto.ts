@@ -31,5 +31,5 @@ export class ChangeUserInfoDto {
 
   @IsOptional()
   @IsNumber()
-  subGroup?: number;
+  subgroup?: number;
 }
