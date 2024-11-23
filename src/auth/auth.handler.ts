@@ -7,6 +7,7 @@ import { catchAsync } from '../utils/catchAsync';
 import AppError from '../utils/appError';
 import { LoginDto } from './dto/request/login.dto';
 import { ResponseStatus } from '../constants/responseStatus';
+import { GetCurrentUserDto } from './dto/response/get-current-user.dto';
 
 const signToken = (id: mongoose.Types.ObjectId) => {
   return jwt.sign({ id }, process.env.JWT_SECRET);
@@ -22,8 +23,15 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 export const register = catchAsync(async (req, res, next) => {
-  const { email, password, group, subgroup, programName }: RegisterDto =
-    req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    group,
+    subgroup,
+    programName,
+  }: RegisterDto = req.body;
 
   const foundUser = await User.findOne({ email });
 
@@ -34,6 +42,8 @@ export const register = catchAsync(async (req, res, next) => {
   }
 
   const newUser = await User.create({
+    firstName,
+    lastName,
     email,
     password,
     group,
@@ -62,4 +72,11 @@ export const login = catchAsync(async (req, res, next) => {
   }
 
   createSendToken(user, 200, res);
+});
+
+export const getCurrentUser = catchAsync(async (req, res, next) => {
+  res.json({
+    status: ResponseStatus.SUCESS,
+    data: new GetCurrentUserDto(req.user),
+  });
 });

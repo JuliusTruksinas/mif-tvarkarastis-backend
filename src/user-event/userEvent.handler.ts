@@ -9,7 +9,7 @@ import { UpdateUserEventResponseDto } from './dto/response/update-user-event-res
 import { UserEvent } from './userEvent.model';
 
 export const fetchUserEvents = catchAsync(async (req, res, next) => {
-  const userEvents = await UserEvent.find({}).lean();
+  const userEvents = await UserEvent.find({ user: req.user._id }).lean();
 
   res.json({
     status: ResponseStatus.SUCESS,
@@ -65,6 +65,7 @@ export const updateUserEvent = catchAsync(async (req, res, next) => {
 export const deleteUserEvent = catchAsync(async (req, res, next) => {
   const { userEventId } = req.params;
   const userEvent = await UserEvent.findById(userEventId);
+
   if (!userEvent) {
     return next(
       new AppError('User event with provided ID does not exist', 400),
