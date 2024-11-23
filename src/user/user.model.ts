@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema<IUser>({
     type: Number,
     required: true,
   },
-  subGroup: {
+  subgroup: {
     type: Number,
     required: true,
   },
@@ -41,6 +41,6 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// TODO: add english group and subGroup
+// TODO: add english group and subgroup
 
 export const User = mongoose.model<IUser>('User', userSchema);

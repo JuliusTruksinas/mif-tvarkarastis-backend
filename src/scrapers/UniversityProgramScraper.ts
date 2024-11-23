@@ -7,8 +7,19 @@ export class UniversityProgramScraper {
   private static readonly baseVuYearNumber = 2;
 
   static getAllStudyTypesOptions() {
-    const OPTIONS = { Bachelor: 1 }; // TODO: In the future get all study types from VU;
+    const OPTIONS = [{ label: 'Bakalauras', value: '1' }]; // TODO: In the future get all study types from VU;
     return OPTIONS;
+  }
+
+  static getAllSubgroupsOptions() {
+    // TODO: In the future get all subgroups from VU or other source;
+    const subgroupsOptions: any = [];
+
+    for (let i = 1; i <= 10; i++) {
+      subgroupsOptions.push({ label: `${i}`, value: `${i}` });
+    }
+
+    return subgroupsOptions;
   }
 
   static async getAllProgramsOptions(studyTypeId: number) {
@@ -56,7 +67,7 @@ export class UniversityProgramScraper {
       const scrapingUrl = `https://tvarkarasciai.vu.lt/mif/ajax_fullcalendar_events/${baseGroupUrl}?start=${startDateTime}&end=${endDateTime}`;
 
       return {
-        group: index + 1,
+        group: `${index + 1}`,
         calendarUrl: url,
         scrapingUrl,
       };
@@ -67,7 +78,7 @@ export class UniversityProgramScraper {
   https://tvarkarasciai.vu.lt/mif/ajax_program_select_choices/${vuYearNumber}
   every year is assigned a number internally in VU system, every year it increases +1
   2017 fall - 2018 spring (so basically the continuation of 2017 academic year) is assigned the number 2*/
-  static getVuYearNumber(): number {
+  private static getVuYearNumber(): number {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth();
 
@@ -89,7 +100,7 @@ export class UniversityProgramScraper {
       }));
   }
 
-  static getAcademicYearTimeStrings() {
+  private static getAcademicYearTimeStrings() {
     const currentYear = new Date().getFullYear();
     const YEAR_BUFFER = 2;
 

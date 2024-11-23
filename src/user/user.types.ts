@@ -7,6 +7,6 @@ export interface IUser extends Document {
   password: string;
   programName: string;
   group: number;
-  subGroup: number;
+  subgroup: number;
   events: mongoose.ObjectId[];
 }

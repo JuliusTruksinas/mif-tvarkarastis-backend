@@ -17,12 +17,12 @@ const createSendToken = (user, statusCode, res) => {
 
   res.status(statusCode).json({
     status: ResponseStatus.SUCESS,
-    token,
+    data: { token },
   });
 };
 
 export const register = catchAsync(async (req, res, next) => {
-  const { email, password, group, subGroup, programName }: RegisterDto =
+  const { email, password, group, subgroup, programName }: RegisterDto =
     req.body;
 
   const foundUser = await User.findOne({ email });
@@ -37,7 +37,7 @@ export const register = catchAsync(async (req, res, next) => {
     email,
     password,
     group,
-    subGroup,
+    subgroup,
     programName,
   });
 
