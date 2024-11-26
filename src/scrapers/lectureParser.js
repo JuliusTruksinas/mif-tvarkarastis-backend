@@ -25,11 +25,12 @@ export function parseLecture(event) {
   let dataRooms= $($('a').attr('data-rooms')).find('a').text()
   let location;
   let room;
-  if (dataRooms=='Vyksta nuotoliniu būdu'){
-    location=dataRooms;
+  if (!dataRooms){
+    location=$($('a').attr('data-rooms')).text()
+    .replace("Patalpos: ","");
   }
   else{
-    dataRooms.replace('(MIF-Šalt.)', 'Šaltinis')
+    dataRooms=dataRooms.replace('(MIF-Šalt.)', 'Šaltinis')
     .replace('(MIF-Naug.)', 'Naugardukas')
     .replace('(MIF-Didl.)', 'Didlaukis')
     .replace('S-', '')
