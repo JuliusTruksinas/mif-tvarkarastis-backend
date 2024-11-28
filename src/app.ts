@@ -16,6 +16,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/user-events', userEventRoutes);
 app.use('/api/study-options', studyOptionsRoutes);
+app.use('/api/users/friends', userRoutes);
 
 app.all('*', (req, res, next) => {
   next(
