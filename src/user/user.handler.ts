@@ -22,42 +22,49 @@ export const changeUserInfo = catchAsync(async (req, res, next) => {
 
 export const addFriend = catchAsync(async (req, res, next) => {
   const { friendId } = req.params;
-  const userId = req.user.id;
-  const user = await User.findById(userId);
 
-  if (!friendId) {
-    throw new AppError('User with id: ${friendId} does not exist', 400);
+  const foundFriend = await User.findById(friendId);
+
+  if (!foundFriend) {
+    return next(new AppError('User with id: ${friendId} does not exist', 400));
   }
 
-  if (friendId == userId) {
-    throw new AppError('Are you really your only friend? :(', 400);
+  if (friendId === req.user.id) {
+    return next(new AppError('Are you really your only friend? :(', 400));
   }
-  if (user != null) {
-    if (user.friends.includes(friendId)) {
-      throw new AppError('The user is already in your friend list', 400);
-    }
-    user.friends.push(friendId);
-    await user.save();
+
+  if (req.user.friends.includes(friendId)) {
+    return next(
+      new AppError(
+        `The user with id: ${friendId} is already a friend of user with id: ${req.user.id}`,
+        400,
+      ),
+    );
   }
+
+  req.user.friends.push(friendId);
+  await req.user.save();
 
   res.json({
     status: ResponseStatus.SUCESS,
-    data: user?.friends,
+    data: null,
   });
 });
 
 export const deleteFriend = catchAsync(async (req, res, next) => {
   const { friendId } = req.params;
-  const userId = req.user.id;
-  const user = await User.findById(userId);
 
-  if (user != null) {
-    if (!user.friends.includes(friendId)) {
-      throw new AppError('A friend with id: ${friendID} doesnt not exist', 400);
-    }
-    user.friends = user.friends.filter((id) => id.toString() !== friendId);
-    await user.save();
+  if (!req.user.friends.includes(friendId)) {
+    return next(
+      new AppError('A friend with id: ${friendID} doesnt not exist', 400),
+    );
   }
+
+  req.user.friends = req.user.friends.filter(
+    (id) => id.toString() !== friendId,
+  );
+
+  await req.user.save();
 
   res.json({
     status: ResponseStatus.SUCESS,

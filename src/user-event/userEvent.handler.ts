@@ -22,7 +22,7 @@ export const createUserEvent = catchAsync(async (req, res, next) => {
     startDateTime,
     endDateTime,
     title,
-    notes,
+    note,
     location,
   }: CreateUserEventDto = req.body;
 
@@ -30,10 +30,11 @@ export const createUserEvent = catchAsync(async (req, res, next) => {
     startDateTime,
     endDateTime,
     title,
-    notes,
+    note,
     location,
     user: req.user,
   });
+
   res.json({
     status: ResponseStatus.SUCESS,
     data: new CreateUserEventResponseDto(createdUserEvent),

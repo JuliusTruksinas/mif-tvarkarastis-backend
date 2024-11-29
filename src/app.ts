@@ -6,6 +6,7 @@ import { globalErrorHandler } from './error/error.handler';
 import userRoutes from './user/user.routes';
 import userEventRoutes from './user-event/userEvent.routes';
 import studyOptionsRoutes from './study-options/studyOptions.routes';
+import lectureEventRoutes from './lecture-event/lectureEvent.routes';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/user-events', userEventRoutes);
 app.use('/api/study-options', studyOptionsRoutes);
 app.use('/api/users/friends', userRoutes);
+app.use('/api/lecture-events', lectureEventRoutes);
 
 app.all('*', (req, res, next) => {
   next(

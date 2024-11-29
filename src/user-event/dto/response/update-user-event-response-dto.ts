@@ -6,7 +6,7 @@ export class UpdateUserEventResponseDto {
   startDateTime: Date;
   endDateTime: Date;
   title: string;
-  notes: string | null;
+  note: string | null;
   location: string | null;
 
   constructor(userEvent: IUserEvent) {
@@ -14,7 +14,7 @@ export class UpdateUserEventResponseDto {
     this.startDateTime = userEvent.startDateTime;
     this.endDateTime = userEvent.endDateTime;
     this.title = userEvent.title;
-    this.notes = userEvent.note ?? null;
+    this.note = userEvent.note ?? null;
     this.location = userEvent.location ?? null;
   }
 }
