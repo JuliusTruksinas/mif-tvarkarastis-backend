@@ -21,7 +21,7 @@ export class CreateUserEventDto {
 
   @IsOptional()
   @IsString()
-  notes?: string;
+  note?: string;
 
   @IsOptional()
   @IsString()

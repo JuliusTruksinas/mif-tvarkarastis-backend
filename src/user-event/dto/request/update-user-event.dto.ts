@@ -15,7 +15,7 @@ export class UpdateUserEventDto {
 
   @IsOptional()
   @IsString()
-  notes?: string;
+  note?: string;
 
   @IsOptional()
   @IsString()
