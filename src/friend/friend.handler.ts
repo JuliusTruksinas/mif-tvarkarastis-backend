@@ -1,4 +1,7 @@
 import { ResponseStatus } from '../constants/responseStatus';
+import { Notification } from '../notifications/notification.model';
+import { NotificationType } from '../notifications/notification.types';
+import { SendBasicUserInfoResponseDto } from '../user/dto/response/send-basic-user-info-response.dto';
 import { User } from '../user/user.model';
 import AppError from '../utils/appError';
 import { catchAsync } from '../utils/catchAsync';
@@ -33,11 +36,22 @@ export const sendFriendRequest = catchAsync(async (req, res, next) => {
   }
 
   req.user.sentFriendRequests.push(friendToAdd._id);
+
+  const notification = new Notification({
+    notificationType: NotificationType.friendRequestNotification,
+    data: { user: new SendBasicUserInfoResponseDto(req.user) },
+    IsSeen: false,
+    createdAt: new Date(),
+  });
+  const savedNotification = await notification.save();
+  friendToAdd.notifications.push(savedNotification._id);
+
+  await friendToAdd.save();
   await req.user.save();
 
   res.json({
     status: ResponseStatus.SUCESS,
-    data: req.user.friends,
+    data: null,
   });
 });
 
@@ -78,7 +92,6 @@ export const removeFriend = catchAsync(async (req, res, next) => {
 export const acceptFriendRequest = catchAsync(async (req, res, next) => {
   const { friendId } = req.params;
   const userId = req.user._id;
-
   const friendToAccept = await User.findById(friendId);
 
   if (!friendToAccept) {
@@ -99,6 +112,17 @@ export const acceptFriendRequest = catchAsync(async (req, res, next) => {
   friendToAccept.sentFriendRequests = friendToAccept.sentFriendRequests.filter(
     (id) => id.toString() !== userId.toString(),
   );
+
+  const notification = new Notification({
+    notificationType: NotificationType.friendRequestAcceptedNotification,
+    data: { user: new SendBasicUserInfoResponseDto(req.user) },
+    IsSeen: false,
+    createdAt: new Date(),
+  });
+
+  const savedNotification = await notification.save();
+
+  friendToAccept.notifications.push(savedNotification._id);
 
   await req.user.save();
   await friendToAccept.save();
@@ -124,6 +148,16 @@ export const declineFriendRequest = catchAsync(async (req, res, next) => {
     friendToDecline.sentFriendRequests.filter(
       (id) => id.toString() !== userId.toString(),
     );
+
+  const notification = new Notification({
+    notificationType: NotificationType.friendRequestDeclinedNotification,
+    data: { user: new SendBasicUserInfoResponseDto(req.user) },
+    IsSeen: false,
+    createdAt: new Date(),
+  });
+
+  const savedNotification = await notification.save();
+  friendToDecline.notifications.push(savedNotification._id);
   await friendToDecline.save();
 
   res.json({

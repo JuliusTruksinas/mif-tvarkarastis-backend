@@ -12,4 +12,5 @@ export interface IUser extends Document {
   events: mongoose.ObjectId[];
   friends: mongoose.ObjectId[];
   sentFriendRequests: mongoose.ObjectId[];
+  notifications: mongoose.Types.ObjectId[];
 }
