@@ -11,4 +11,5 @@ export interface IUser extends Document {
   subgroup: number;
   events: mongoose.ObjectId[];
   friends: mongoose.ObjectId[];
+  sentFriendRequests: mongoose.ObjectId[];
 }
