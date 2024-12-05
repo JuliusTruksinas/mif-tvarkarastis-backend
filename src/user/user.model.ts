@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema<IUser>({
   sentFriendRequests: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] },
   ],
+  notifications: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Notification', default: [] },
+  ],
 });
 
 userSchema.pre('save', async function (next) {
