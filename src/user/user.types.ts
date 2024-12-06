@@ -9,6 +9,7 @@ export interface IUser extends Document {
   programName: string;
   group: number;
   subgroup: number;
+  course: number;
   events: mongoose.ObjectId[];
   friends: mongoose.ObjectId[];
   sentFriendRequests: mongoose.ObjectId[];

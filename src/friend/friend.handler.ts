@@ -40,7 +40,7 @@ export const sendFriendRequest = catchAsync(async (req, res, next) => {
   const notification = new Notification({
     notificationType: NotificationType.friendRequestNotification,
     data: { user: new SendBasicUserInfoResponseDto(req.user) },
-    IsSeen: false,
+    isSeen: false,
     createdAt: new Date(),
   });
   const savedNotification = await notification.save();
@@ -116,7 +116,7 @@ export const acceptFriendRequest = catchAsync(async (req, res, next) => {
   const notification = new Notification({
     notificationType: NotificationType.friendRequestAcceptedNotification,
     data: { user: new SendBasicUserInfoResponseDto(req.user) },
-    IsSeen: false,
+    isSeen: false,
     createdAt: new Date(),
   });
 
@@ -152,7 +152,7 @@ export const declineFriendRequest = catchAsync(async (req, res, next) => {
   const notification = new Notification({
     notificationType: NotificationType.friendRequestDeclinedNotification,
     data: { user: new SendBasicUserInfoResponseDto(req.user) },
-    IsSeen: false,
+    isSeen: false,
     createdAt: new Date(),
   });
 
@@ -163,14 +163,5 @@ export const declineFriendRequest = catchAsync(async (req, res, next) => {
   res.json({
     status: ResponseStatus.SUCESS,
     data: null,
-  });
-});
-
-export const getAllFriends = catchAsync(async (req, res, next) => {
-  const { friends } = await req.user.populate('friends').execPopulate();
-
-  res.json({
-    status: ResponseStatus.SUCESS,
-    data: friends,
   });
 });

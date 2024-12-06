@@ -11,7 +11,7 @@ const NotificationSchema = new mongoose.Schema<INotification>({
     required: true,
     type: Schema.Types.Mixed,
   },
-  IsSeen: {
+  isSeen: {
     required: true,
     type: Boolean,
   },

@@ -27,6 +27,10 @@ export class ChangeUserInfoDto {
 
   @IsOptional()
   @IsNumber()
+  course?: number;
+
+  @IsOptional()
+  @IsNumber()
   group?: number;
 
   @IsOptional()

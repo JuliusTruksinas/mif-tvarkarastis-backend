@@ -4,12 +4,10 @@ import { catchAsync } from '../utils/catchAsync';
 import { Notification } from './notification.model';
 
 export const getAllNotifications = catchAsync(async (req, res, next) => {
-  const { notifications } = await req.user
-    .populate('notifications')
-    .execPopulate();
+  await req.user.populate('notifications');
 
-  const unreadNotifications = notifications.filter(
-    (notification) => !notification.isSeen,
+  const unreadNotifications = req.user.notifications.filter(
+    (notification) => notification.isSeen === false,
   );
 
   res.json({
@@ -26,7 +24,7 @@ export const setNotificationToSeen = catchAsync(async (req, res, next) => {
     throw new AppError('Notification with this id does not exist', 400);
   }
 
-  notification.IsSeen = true;
+  notification.isSeen = true;
   await notification.save();
 
   res.json({
