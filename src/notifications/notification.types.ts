@@ -4,7 +4,7 @@ export interface INotification extends Document {
   _id: mongoose.Types.ObjectId;
   notificationType: NotificationType;
   data: Mixed;
-  IsSeen: boolean;
+  isSeen: boolean;
   createdAt: Date;
 }
 

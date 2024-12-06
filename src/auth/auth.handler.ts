@@ -31,6 +31,7 @@ export const register = catchAsync(async (req, res, next) => {
     group,
     subgroup,
     programName,
+    course,
   }: RegisterDto = req.body;
 
   const foundUser = await User.findOne({ email });
@@ -49,6 +50,7 @@ export const register = catchAsync(async (req, res, next) => {
     group,
     subgroup,
     programName,
+    course,
   });
 
   createSendToken(newUser, 201, res);

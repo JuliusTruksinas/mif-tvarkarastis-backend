@@ -37,6 +37,10 @@ export class RegisterDto {
 
   @IsNotEmpty()
   @IsNumber()
+  course: number;
+
+  @IsNotEmpty()
+  @IsNumber()
   group: number;
 
   @IsNotEmpty()

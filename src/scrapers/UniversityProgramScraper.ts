@@ -12,12 +12,10 @@ export class UniversityProgramScraper {
   }
 
   static getAllSubgroupsOptions() {
-    // TODO: In the future get all subgroups from VU or other source;
-    const subgroupsOptions: any = [];
-
-    for (let i = 1; i <= 10; i++) {
-      subgroupsOptions.push({ label: `${i}`, value: `${i}` });
-    }
+    const subgroupsOptions: any = [
+      { label: '1', value: '1' },
+      { label: '2', value: '2' },
+    ];
 
     return subgroupsOptions;
   }

@@ -5,8 +5,6 @@ import { LectureEvent } from './lectureEvent.model';
 export const getUserLectureEvents = catchAsync(async (req, res, next) => {
   const { user } = req;
 
-  console.log(user);
-
   const lectureEvents = await LectureEvent.find({
     groups: user.group,
     $or: [{ subgroup: user.subgroup }, { subgroup: null }],

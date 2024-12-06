@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema<IUser>({
     required: true,
     maxlength: 100,
   },
+  course: {
+    type: Number,
+    required: true,
+  },
   group: {
     type: Number,
     required: true,
