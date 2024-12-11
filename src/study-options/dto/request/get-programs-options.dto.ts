@@ -4,5 +4,5 @@ export class GetProgramsOptionsDto {
   @IsNumber()
   @Min(0)
   @Max(100)
-  studyTypeId: number;
+  studyType: number;
 }

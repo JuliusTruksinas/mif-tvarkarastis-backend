@@ -20,9 +20,9 @@ export class UniversityProgramScraper {
     return subgroupsOptions;
   }
 
-  static async getAllProgramsOptions(studyTypeId: number) {
+  static async getAllProgramsOptions(studyType: number) {
     const response = await axios.get(
-      `https://tvarkarasciai.vu.lt/mif/ajax_program_select_choices/${UniversityProgramScraper.getVuYearNumber()}/?study_type_id=${studyTypeId}`,
+      `https://tvarkarasciai.vu.lt/mif/ajax_program_select_choices/${UniversityProgramScraper.getVuYearNumber()}/?study_type_id=${studyType}`,
     );
 
     const { programs } = response.data;
@@ -31,11 +31,11 @@ export class UniversityProgramScraper {
   }
 
   static async getProgramCoursesOptions(
-    studyTypeId: number,
+    studyType: number,
     studyProgramName: string,
   ) {
     const response = await axios.get(
-      `https://tvarkarasciai.vu.lt/mif/ajax_course_select_choices/${UniversityProgramScraper.getVuYearNumber()}/?study_type_id=${studyTypeId}&study_program_name=${studyProgramName}`,
+      `https://tvarkarasciai.vu.lt/mif/ajax_course_select_choices/${UniversityProgramScraper.getVuYearNumber()}/?study_type_id=${studyType}&study_program_name=${studyProgramName}`,
     );
 
     const { courses } = response.data;
@@ -44,12 +44,12 @@ export class UniversityProgramScraper {
   }
 
   static async getProgramGroupsScrapingURL(
-    studyTypeId: number,
+    studyType: number,
     studyProgramName: string,
     courseId: number,
   ) {
     const response = await axios.get(
-      `https://tvarkarasciai.vu.lt/mif/ajax_filtered_groups/${UniversityProgramScraper.getVuYearNumber()}/?study_type_id=${studyTypeId}&study_program_name=${studyProgramName}&course=${courseId}&exams=False`,
+      `https://tvarkarasciai.vu.lt/mif/ajax_filtered_groups/${UniversityProgramScraper.getVuYearNumber()}/?study_type_id=${studyType}&study_program_name=${studyProgramName}&course=${courseId}&exams=False`,
     );
 
     const groups: ScrapedGroupInfo[] = response.data.groups;

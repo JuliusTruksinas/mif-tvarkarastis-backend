@@ -16,10 +16,10 @@ export const getAllStudyTypesOptions = (req, res, next) => {
 };
 
 export const getAllProgramsOptions = catchAsync(async (req, res, next) => {
-  const { studyTypeId }: GetProgramsOptionsDto = req.body;
+  const { studyType }: GetProgramsOptionsDto = req.body;
 
   const allProgramsOptions =
-    await UniversityProgramScraper.getAllProgramsOptions(studyTypeId);
+    await UniversityProgramScraper.getAllProgramsOptions(studyType);
 
   res.json({
     status: ResponseStatus.SUCESS,
@@ -28,11 +28,11 @@ export const getAllProgramsOptions = catchAsync(async (req, res, next) => {
 });
 
 export const getAllCoursesOptions = catchAsync(async (req, res, next) => {
-  const { studyTypeId, studyProgramName }: GetCoursesOptionsDto = req.body;
+  const { studyType, studyProgramName }: GetCoursesOptionsDto = req.body;
 
   const allCoursesOptions =
     await UniversityProgramScraper.getProgramCoursesOptions(
-      studyTypeId,
+      studyType,
       studyProgramName,
     );
 
@@ -43,12 +43,11 @@ export const getAllCoursesOptions = catchAsync(async (req, res, next) => {
 });
 
 export const getAllGroupsOptions = catchAsync(async (req, res, next) => {
-  const { studyTypeId, studyProgramName, course }: GetGroupsOptionsDto =
-    req.body;
+  const { studyType, studyProgramName, course }: GetGroupsOptionsDto = req.body;
 
   const groupsScrapingUrl =
     await UniversityProgramScraper.getProgramGroupsScrapingURL(
-      studyTypeId,
+      studyType,
       studyProgramName,
       course,
     );
