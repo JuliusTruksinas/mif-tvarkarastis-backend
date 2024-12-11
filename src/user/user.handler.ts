@@ -61,11 +61,29 @@ export const getAllFriends = catchAsync(async (req, res, next) => {
 });
 
 export const changeUserInfo = catchAsync(async (req, res, next) => {
-  const changeUserInfoDto: ChangeUserInfoDto = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    studyType,
+    group,
+    subgroup,
+    programName,
+    course,
+  }: ChangeUserInfoDto = req.body;
 
-  for (const key of Object.keys(changeUserInfoDto)) {
-    req.user[key] = changeUserInfoDto[key];
-  }
+  Object.assign(req.user, {
+    firstName,
+    lastName,
+    email,
+    studyType,
+    group,
+    subgroup,
+    programName,
+    course,
+    ...(password && { password }),
+  });
 
   const updatedUser = await req.user.save();
 

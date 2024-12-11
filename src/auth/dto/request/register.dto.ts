@@ -31,6 +31,10 @@ export class RegisterDto {
   password: string;
 
   @IsNotEmpty()
+  @IsNumber()
+  studyType: number;
+
+  @IsNotEmpty()
   @IsString()
   @MaxLength(100)
   programName: string;

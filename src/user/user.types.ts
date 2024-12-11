@@ -6,10 +6,11 @@ export interface IUser extends Document {
   lastName: string;
   email: string;
   password: string;
+  studyType: number;
   programName: string;
+  course: number;
   group: number;
   subgroup: number;
-  course: number;
   events: mongoose.ObjectId[];
   friends: mongoose.ObjectId[];
   sentFriendRequests: mongoose.ObjectId[];

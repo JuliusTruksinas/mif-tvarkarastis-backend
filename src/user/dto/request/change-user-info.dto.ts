@@ -4,15 +4,26 @@ import {
   MaxLength,
   MinLength,
   IsNumber,
+  IsNotEmpty,
   IsOptional,
 } from 'class-validator';
 
 export class ChangeUserInfoDto {
-  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(100)
+  firstName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(100)
+  lastName: string;
+
+  @IsNotEmpty()
   @IsString()
   @IsEmail()
   @MaxLength(100)
-  email?: string;
+  email: string;
 
   @IsOptional()
   @IsString()
@@ -20,20 +31,24 @@ export class ChangeUserInfoDto {
   @MaxLength(100)
   password?: string;
 
-  @IsOptional()
+  @IsNotEmpty()
+  @IsNumber()
+  studyType: number;
+
+  @IsNotEmpty()
   @IsString()
   @MaxLength(100)
-  programName?: string;
+  programName: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
-  course?: number;
+  course: number;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
-  group?: number;
+  group: number;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
-  subgroup?: number;
+  subgroup: number;
 }

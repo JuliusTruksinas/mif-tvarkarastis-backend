@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema<IUser>({
     minlength: 6,
     maxlength: 100,
   },
+  studyType: {
+    type: Number,
+    required: true,
+  },
   programName: {
     type: String,
     required: true,
