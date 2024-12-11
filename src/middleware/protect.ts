@@ -10,7 +10,7 @@ export const protect = catchAsync(async (req, res, next) => {
     !req.headers.authorization.startsWith('Bearer')
   ) {
     return next(
-      new AppError('You are not logged in. Please log in to get access', 400),
+      new AppError('You are not logged in. Please log in to get access', 401),
     );
   }
 
