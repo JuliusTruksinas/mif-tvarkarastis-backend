@@ -5,6 +5,8 @@ export interface ILectureEvent extends Document {
   startDateTime: Date;
   endDateTime: Date;
   title: string;
+  programName: string;
+  course: number;
   groups: number[];
   subgroup?: number;
   lecturer: string;

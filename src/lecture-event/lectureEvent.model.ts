@@ -16,6 +16,14 @@ const lectureEventSchema = new mongoose.Schema<ILectureEvent>({
     maxlength: 200,
     minlength: 1,
   },
+  programName: {
+    type: String,
+    required: true,
+  },
+  course: {
+    type: Number,
+    required: true,
+  },
   groups: {
     type: [Number],
     required: true,
@@ -26,7 +34,7 @@ const lectureEventSchema = new mongoose.Schema<ILectureEvent>({
   },
   lecturer: {
     type: String,
-    required: true,
+    required: false,
   },
   lectureTypes: {
     type: [String],
@@ -40,7 +48,7 @@ const lectureEventSchema = new mongoose.Schema<ILectureEvent>({
   },
   location: {
     type: String,
-    required: true,
+    required: false,
     maxlength: 100,
     minlength: 1,
   },
