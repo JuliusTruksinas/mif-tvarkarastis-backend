@@ -11,6 +11,7 @@ import lectureEventRoutes from './lecture-event/lectureEvent.routes';
 import friendRoutes from './friend/friend.routes';
 import notificationRoutes from './notifications/notification.routes';
 import swaggerDocs from './swagger/swaggerConfiguration';
+import vuDataRoutes from './vu-data/vuData.routes';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/api/users/friends', userRoutes);
 app.use('/api/lecture-events', lectureEventRoutes);
 app.use('/api/friends', friendRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/vu-data', vuDataRoutes);
 
 app.get('/api/api-docs/json', (req, res) => {
   res.json(swaggerDocs);

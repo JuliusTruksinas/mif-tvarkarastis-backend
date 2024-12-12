@@ -6,6 +6,8 @@ export const getUserLectureEvents = catchAsync(async (req, res, next) => {
   const { user } = req;
 
   const lectureEvents = await LectureEvent.find({
+    programName: user.programName,
+    course: user.course,
     groups: user.group,
     $or: [{ subgroup: user.subgroup }, { subgroup: null }],
   }).lean();
