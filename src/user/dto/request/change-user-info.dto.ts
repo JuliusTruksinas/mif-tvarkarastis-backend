@@ -6,6 +6,8 @@ import {
   IsNumber,
   IsNotEmpty,
   IsOptional,
+  Min,
+  Max,
 } from 'class-validator';
 
 export class ChangeUserInfoDto {
@@ -50,5 +52,7 @@ export class ChangeUserInfoDto {
 
   @IsNotEmpty()
   @IsNumber()
+  @Min(1)
+  @Max(2)
   subgroup: number;
 }
