@@ -7,6 +7,8 @@ import { UpdateUserEventDto } from './dto/request/update-user-event.dto';
 import { CreateUserEventResponseDto } from './dto/response/create-user-event-response.dto';
 import { UpdateUserEventResponseDto } from './dto/response/update-user-event-response-dto';
 import { UserEvent } from './userEvent.model';
+import { convertToUTC } from '../helpers/time';
+import { AuthenticatedRequest } from '../domain/authenticatedRequest';
 
 export const fetchUserEvents = catchAsync(async (req, res, next) => {
   const userEvents = await UserEvent.find({ user: req.user._id }).lean();
@@ -17,51 +19,84 @@ export const fetchUserEvents = catchAsync(async (req, res, next) => {
   });
 });
 
-export const createUserEvent = catchAsync(async (req, res, next) => {
-  const {
-    startDateTime,
-    endDateTime,
-    title,
-    note,
-    location,
-  }: CreateUserEventDto = req.body;
+export const createUserEvent = catchAsync(
+  async (req: AuthenticatedRequest, res, next) => {
+    const {
+      startDateTime,
+      endDateTime,
+      title,
+      note,
+      location,
+    }: CreateUserEventDto = req.body;
 
-  const createdUserEvent = await UserEvent.create({
-    startDateTime,
-    endDateTime,
-    title,
-    note,
-    location,
-    user: req.user,
-  });
+    if (new Date(startDateTime) >= new Date(endDateTime)) {
+      return next(new AppError('Start time must be before end time', 400));
+    }
 
-  res.json({
-    status: ResponseStatus.SUCESS,
-    data: new CreateUserEventResponseDto(createdUserEvent),
-  });
-});
+    const createdUserEvent = await UserEvent.create({
+      startDateTime: convertToUTC(startDateTime, req.timezone),
+      endDateTime: convertToUTC(endDateTime, req.timezone),
+      title,
+      note,
+      location,
+      user: req.user,
+    });
 
-export const updateUserEvent = catchAsync(async (req, res, next) => {
-  const updateUserEventDto: UpdateUserEventDto = req.body;
-  const { userEventId } = req.params;
-  const userEvent = await UserEvent.findById(userEventId);
+    res.json({
+      status: ResponseStatus.SUCESS,
+      data: new CreateUserEventResponseDto(createdUserEvent),
+    });
+  },
+);
 
-  if (!userEvent) {
-    return next(
-      new AppError('User event with provided ID does not exist', 400),
+export const updateUserEvent = catchAsync(
+  async (req: AuthenticatedRequest, res, next) => {
+    const updateUserEventDto: UpdateUserEventDto = req.body;
+    const { userEventId } = req.params;
+    const userEvent = await UserEvent.findById(userEventId);
+
+    if (!userEvent) {
+      return next(
+        new AppError('User event with provided ID does not exist', 400),
+      );
+    }
+
+    if (
+      new Date(updateUserEventDto.startDateTime) >=
+      new Date(updateUserEventDto.endDateTime)
+    ) {
+      return next(new AppError('Start time must be before end time', 400));
+    }
+
+    //@ts-ignore
+    userEvent.startDateTime = convertToUTC(
+      updateUserEventDto.startDateTime,
+      req.timezone,
     );
-  }
 
-  for (const key of Object.keys(updateUserEventDto)) {
-    userEvent[key] = updateUserEventDto[key];
-  }
+    //@ts-ignore
+    userEvent.endDateTime = convertToUTC(
+      updateUserEventDto.endDateTime,
+      req.timezone,
+    );
 
-  const updatedUserEvent = await userEvent.save();
-  res.json({
-    status: ResponseStatus.SUCESS,
-    data: new UpdateUserEventResponseDto(updatedUserEvent),
-  });
-});
+    userEvent.title = updateUserEventDto.title;
+
+    if (updateUserEventDto.note) {
+      userEvent.note = updateUserEventDto.note;
+    }
+
+    if (updateUserEventDto.location) {
+      userEvent.location = updateUserEventDto.location;
+    }
+
+    const updatedUserEvent = await userEvent.save();
+    res.json({
+      status: ResponseStatus.SUCESS,
+      data: new UpdateUserEventResponseDto(updatedUserEvent),
+    });
+  },
+);
 
 export const deleteUserEvent = catchAsync(async (req, res, next) => {
   const { userEventId } = req.params;

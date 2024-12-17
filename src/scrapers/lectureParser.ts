@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
-import moment from 'moment-timezone';
+
+import { convertToUTC } from '../helpers/time';
 
 enum Location {
   NAUGARDUKAS = 'naugardukas',
@@ -9,16 +10,14 @@ enum Location {
 
 // TODO: add types
 export class LectureParser {
-  // Constants
-  static readonly LITHUANIAN_TIME_ZONE = 'Etc/GMT-2';
-
   // internal properties
   public event: any;
-  private $: cheerio.CheerioAPI;
+  private readonly $: cheerio.CheerioAPI;
+  private static readonly _timeZone = 'Europe/Vilnius';
 
   // properties that don't need to be computed
-  private _programName: string;
-  private _course: number;
+  private readonly _programName: string;
+  private readonly _course: number;
 
   // properties that need to be computed
   private _title: string | undefined | null = undefined;
@@ -190,11 +189,19 @@ export class LectureParser {
   }
 
   public get startDateTime(): string | null {
-    return this.convertLithuanianDateTimeToUtc(this?.event?.start);
+    if (!this?.event?.start) {
+      return null;
+    }
+
+    return convertToUTC(this?.event?.start, LectureParser._timeZone);
   }
 
   public get endDateTime(): string | null {
-    return this.convertLithuanianDateTimeToUtc(this?.event?.end);
+    if (!this?.event?.end) {
+      return null;
+    }
+
+    return convertToUTC(this?.event?.end, LectureParser._timeZone);
   }
 
   public get programName() {
@@ -203,17 +210,6 @@ export class LectureParser {
 
   public get course() {
     return this._course;
-  }
-
-  private convertLithuanianDateTimeToUtc(dateString: string | undefined) {
-    if (!dateString) {
-      return null;
-    }
-
-    return moment
-      .tz(dateString, LectureParser.LITHUANIAN_TIME_ZONE)
-      .utc()
-      .format();
   }
 
   public getAllData() {
