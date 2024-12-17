@@ -12,11 +12,13 @@ import friendRoutes from './friend/friend.routes';
 import notificationRoutes from './notifications/notification.routes';
 import swaggerDocs from './swagger/swaggerConfiguration';
 import vuDataRoutes from './vu-data/vuData.routes';
+import { detectTimezone } from './middleware/detectTimeZone';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(detectTimezone);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

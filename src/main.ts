@@ -8,8 +8,8 @@ import logger from './logger';
 const serverConfig: any = config.get('server');
 const dbConfig: any = config.get('db');
 
-const PORT = process.env.PORT ?? serverConfig.port;
-const MONGO_URI = process.env.MONGO_URI ?? dbConfig.mongoUri;
+const PORT = process.env.PORT || serverConfig.port;
+const MONGO_URI = process.env.MONGO_URI || dbConfig.mongoUri;
 
 async function bootstap() {
   try {

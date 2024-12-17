@@ -22,6 +22,18 @@ export const validateDto = (dtoClass: any) =>
           : 'Invalid input';
       }
 
-      next(new AppError('Invalid input', 400, validationErrors));
+      const errorMessage = Object.entries(validationErrors)
+        .map(
+          ([property, messages]: any) => `${property}: ${messages.join(', ')}`,
+        )
+        .join('; ');
+
+      next(
+        new AppError(
+          `Validation failed: ${errorMessage}`,
+          400,
+          validationErrors,
+        ),
+      );
     },
   );

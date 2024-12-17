@@ -14,7 +14,7 @@ export class UpdateUserEventResponseDto {
     this.startDateTime = userEvent.startDateTime;
     this.endDateTime = userEvent.endDateTime;
     this.title = userEvent.title;
-    this.note = userEvent.note ?? null;
-    this.location = userEvent.location ?? null;
+    this.note = userEvent.note || null;
+    this.location = userEvent.location || null;
   }
 }

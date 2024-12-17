@@ -1,3 +1,4 @@
+import { AppRequest } from '../domain/appRequest';
 import { LectureEvent } from '../lecture-event/lectureEvent.model';
 import { LectureParser } from '../scrapers/lectureParser';
 import { UniversityProgramScraper } from '../scrapers/UniversityProgramScraper';
@@ -55,46 +56,48 @@ const updateLectures = async (
   }
 };
 
-export const updateLecturesHandler = catchAsync(async (req, res, next) => {
-  await LectureEvent.deleteMany({});
+export const updateLecturesHandler = catchAsync(
+  async (req: AppRequest, res, next) => {
+    await LectureEvent.deleteMany({});
 
-  const programOptions = await UniversityProgramScraper.getAllProgramsOptions(
-    1,
-  );
+    const programOptions = await UniversityProgramScraper.getAllProgramsOptions(
+      1,
+    );
 
-  // TODO: in the future don't filter only by one programName, add more
-  const filteredProgramOptions = programOptions.filter(
-    (programOption) =>
-      programOption.value === 'Informacinių sistemų inžinerija',
-  );
+    // TODO: in the future don't filter only by one programName, add more
+    const filteredProgramOptions = programOptions.filter(
+      (programOption) =>
+        programOption.value === 'Informacinių sistemų inžinerija',
+    );
 
-  for (const programOption of filteredProgramOptions) {
-    const courseOptions =
-      await UniversityProgramScraper.getProgramCoursesOptions(
-        1,
-        programOption.value,
-      );
-
-    for (const courseOption of courseOptions) {
-      const groupsData: GroupData[] =
-        await UniversityProgramScraper.getProgramGroupsScrapingURL(
+    for (const programOption of filteredProgramOptions) {
+      const courseOptions =
+        await UniversityProgramScraper.getProgramCoursesOptions(
           1,
           programOption.value,
-          +courseOption.value,
         );
 
-      for (const groupData of groupsData) {
-        await updateLectures(
-          groupData,
-          programOption.value,
-          +courseOption.value,
-        );
+      for (const courseOption of courseOptions) {
+        const groupsData: GroupData[] =
+          await UniversityProgramScraper.getProgramGroupsScrapingURL(
+            1,
+            programOption.value,
+            +courseOption.value,
+          );
+
+        for (const groupData of groupsData) {
+          await updateLectures(
+            groupData,
+            programOption.value,
+            +courseOption.value,
+          );
+        }
       }
     }
-  }
 
-  res.json({
-    status: 'success',
-    data: null,
-  });
-});
+    res.json({
+      status: 'success',
+      data: null,
+    });
+  },
+);
