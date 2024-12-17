@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import moment from 'moment-timezone';
 
 enum Location {
   NAUGARDUKAS = 'naugardukas',
@@ -8,9 +9,14 @@ enum Location {
 
 // TODO: add types
 export class LectureParser {
+  // Constants
+  static readonly LITHUANIAN_TIME_ZONE = 'Etc/GMT-2';
+
+  // internal properties
   public event: any;
   private $: cheerio.CheerioAPI;
 
+  // properties that don't need to be computed
   private _programName: string;
   private _course: number;
 
@@ -183,12 +189,12 @@ export class LectureParser {
     return parsedSubgroup;
   }
 
-  public get startDateTime() {
-    return this?.event?.start || null;
+  public get startDateTime(): string | null {
+    return this.convertLithuanianDateTimeToUtc(this?.event?.start);
   }
 
-  public get endDateTime() {
-    return this?.event?.end || null;
+  public get endDateTime(): string | null {
+    return this.convertLithuanianDateTimeToUtc(this?.event?.end);
   }
 
   public get programName() {
@@ -197,6 +203,17 @@ export class LectureParser {
 
   public get course() {
     return this._course;
+  }
+
+  private convertLithuanianDateTimeToUtc(dateString: string | undefined) {
+    if (!dateString) {
+      return null;
+    }
+
+    return moment
+      .tz(dateString, LectureParser.LITHUANIAN_TIME_ZONE)
+      .utc()
+      .format();
   }
 
   public getAllData() {
