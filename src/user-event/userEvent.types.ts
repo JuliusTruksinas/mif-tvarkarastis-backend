@@ -7,5 +7,7 @@ export interface IUserEvent extends Document {
   title: string;
   note?: string;
   location?: string;
+  repeatable: Boolean;
+  repeatableUntil?: Date;
   user: mongoose.ObjectId;
 }

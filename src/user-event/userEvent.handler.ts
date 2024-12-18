@@ -47,25 +47,61 @@ export const createUserEvent = catchAsync(
       title,
       note,
       location,
+      repeatable,
+      repeatableUntil,
     }: CreateUserEventDto = req.body;
 
     if (new Date(startDateTime) >= new Date(endDateTime)) {
       return next(new AppError('Start time must be before end time', 400));
     }
 
-    const createdUserEvent = await UserEvent.create({
-      startDateTime: convertToUTC(startDateTime, req.timezone),
-      endDateTime: convertToUTC(endDateTime, req.timezone),
-      title,
-      note,
-      location,
-      user: req.user,
-    });
+    if (repeatable === true) {
+      let TemporaryDate = new Date(startDateTime);
+      let repeatableUntilDate = new Date(repeatableUntil);
+      let Counter = 0;
+      while (TemporaryDate <= repeatableUntilDate) {
+        let StartDateAsADateObject = new Date(startDateTime);
+        let EndDateAsADateObject = new Date(endDateTime);
+        TemporaryDate.setDate(TemporaryDate.getDate() + 7);
+        StartDateAsADateObject.setDate(
+          StartDateAsADateObject.getDate() + 7 * Counter,
+        );
+        const UpdaterStartDateString = StartDateAsADateObject.toISOString();
+        EndDateAsADateObject.setDate(
+          EndDateAsADateObject.getDate() + 7 * Counter,
+        );
+        const UpdatedEndDateString = EndDateAsADateObject.toISOString();
+        Counter++;
+        await UserEvent.create({
+          startDateTime: convertToUTC(UpdaterStartDateString, req.timezone),
+          endDateTime: convertToUTC(UpdatedEndDateString, req.timezone),
+          title,
+          note,
+          location,
+          repeatable,
+          repeatableUntil,
+          user: req.user,
+        });
+      }
 
-    res.json({
-      status: ResponseStatus.SUCESS,
-      data: new CreateUserEventResponseDto(createdUserEvent),
-    });
+      res.json({
+        status: ResponseStatus.SUCESS,
+      });
+    } else {
+      const createdUserEvent = await UserEvent.create({
+        startDateTime: convertToUTC(startDateTime, req.timezone),
+        endDateTime: convertToUTC(endDateTime, req.timezone),
+        title,
+        note,
+        location,
+        user: req.user,
+      });
+
+      res.json({
+        status: ResponseStatus.SUCESS,
+        data: new CreateUserEventResponseDto(createdUserEvent),
+      });
+    }
   },
 );
 
