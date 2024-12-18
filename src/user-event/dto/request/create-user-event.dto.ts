@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsDateString,
   IsNotEmpty,
   IsOptional,
@@ -25,4 +26,12 @@ export class CreateUserEventDto {
   @IsOptional()
   @IsString()
   location?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  repeatable: boolean;
+
+  @IsOptional()
+  @IsDateString()
+  repeatableUntil: string;
 }

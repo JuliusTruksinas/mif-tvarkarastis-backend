@@ -35,6 +35,12 @@ export const sendFriendRequest = catchAsync(async (req, res, next) => {
     );
   }
 
+  if (friendToAdd.sentFriendRequests.includes(req.user._id)) {
+    return next(
+      new AppError('This user has already sent you a friend request', 400),
+    );
+  }
+
   req.user.sentFriendRequests.push(friendToAdd._id);
 
   const notification = new Notification({
