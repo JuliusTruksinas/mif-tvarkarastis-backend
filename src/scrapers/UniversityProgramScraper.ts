@@ -28,10 +28,7 @@ export class UniversityProgramScraper {
     const { programs } = response.data;
 
     // TODO: In the future remove the filter method so the user could choose any program
-    return UniversityProgramScraper.formatOptionsFrom2dArray(programs).filter(
-      (program) =>
-        program.value.toLowerCase() === 'informacinių sistemų inžinerija',
-    );
+    return UniversityProgramScraper.formatOptionsFrom2dArray(programs);
   }
 
   static async getProgramCoursesOptions(

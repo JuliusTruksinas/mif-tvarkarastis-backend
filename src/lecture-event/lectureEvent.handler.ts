@@ -36,7 +36,7 @@ export const getUserLectureEvents = catchAsync(
     const lectureEvents = await LectureEvent.find({
       programName: foundUser.programName,
       course: foundUser.course,
-      groups: foundUser.group,
+      group: foundUser.group,
       $or: [{ subgroup: foundUser.subgroup }, { subgroup: null }],
       $and: [
         {

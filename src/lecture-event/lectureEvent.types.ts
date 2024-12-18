@@ -7,7 +7,7 @@ export interface ILectureEvent extends Document {
   title: string;
   programName: string;
   course: number;
-  groups: number[];
+  group: number;
   subgroup?: number;
   lecturer: string;
   lectureTypes: string[];
