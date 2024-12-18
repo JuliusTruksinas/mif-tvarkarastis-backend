@@ -9,10 +9,16 @@ import {
   updateUserEvent,
 } from './userEvent.handler';
 import { UpdateUserEventDto } from './dto/request/update-user-event.dto';
+import { GetUserLectureEventsRequestDto } from '../lecture-event/dto/request/get-user-lecture-events.dto';
 
 const userEventRoutes = express.Router();
 
-userEventRoutes.get('', protect, fetchUserEvents);
+userEventRoutes.patch(
+  '',
+  protect,
+  validateDto(GetUserLectureEventsRequestDto),
+  fetchUserEvents,
+);
 
 userEventRoutes.post(
   '',

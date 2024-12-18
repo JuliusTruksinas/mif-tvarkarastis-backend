@@ -9,15 +9,35 @@ import { UpdateUserEventResponseDto } from './dto/response/update-user-event-res
 import { UserEvent } from './userEvent.model';
 import { convertToUTC } from '../helpers/time';
 import { AuthenticatedRequest } from '../domain/authenticatedRequest';
+import { GetUserLectureEventsRequestDto } from '../lecture-event/dto/request/get-user-lecture-events.dto';
 
-export const fetchUserEvents = catchAsync(async (req, res, next) => {
-  const userEvents = await UserEvent.find({ user: req.user._id }).lean();
+export const fetchUserEvents = catchAsync(
+  async (req: AuthenticatedRequest, res, next) => {
+    const { startDateTime, endDateTime }: GetUserLectureEventsRequestDto =
+      req.body;
 
-  res.json({
-    status: ResponseStatus.SUCESS,
-    data: userEvents.map((userEvent) => transformMongoDbObjectId(userEvent)),
-  });
-});
+    const userEvents = await UserEvent.find({
+      user: req.user._id,
+      $and: [
+        {
+          startDateTime: {
+            $gte: new Date(convertToUTC(startDateTime, req.timezone)),
+          },
+        },
+        {
+          endDateTime: {
+            $lte: new Date(convertToUTC(endDateTime, req.timezone)),
+          },
+        },
+      ],
+    }).lean();
+
+    res.json({
+      status: ResponseStatus.SUCESS,
+      data: userEvents.map((userEvent) => transformMongoDbObjectId(userEvent)),
+    });
+  },
+);
 
 export const createUserEvent = catchAsync(
   async (req: AuthenticatedRequest, res, next) => {
