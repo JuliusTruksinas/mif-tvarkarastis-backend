@@ -1,5 +1,7 @@
 import { AuthenticatedRequest } from '../domain/authenticatedRequest';
 import { convertToUTC } from '../helpers/time';
+import { User } from '../user/user.model';
+import AppError from '../utils/appError';
 import { catchAsync } from '../utils/catchAsync';
 import { transformMongoDbObjectId } from '../utils/transformMongoDbObjectId';
 import { GetUserLectureEventsRequestDto } from './dto/request/get-user-lecture-events.dto';
@@ -7,15 +9,35 @@ import { LectureEvent } from './lectureEvent.model';
 
 export const getUserLectureEvents = catchAsync(
   async (req: AuthenticatedRequest, res, next) => {
-    const { user } = req;
-    const { startDateTime, endDateTime }: GetUserLectureEventsRequestDto =
-      req.body;
+    const {
+      startDateTime,
+      endDateTime,
+      userId,
+    }: GetUserLectureEventsRequestDto = req.body;
+
+    const foundUser = await User.findById(userId);
+
+    if (!foundUser) {
+      return next(new AppError('User does not exist', 400));
+    }
+
+    if (
+      foundUser.id !== req.user.id &&
+      !req.user.friends.includes(foundUser.id)
+    ) {
+      return next(
+        new AppError(
+          "You can't view the calendars of users who aren't your friends.",
+          400,
+        ),
+      );
+    }
 
     const lectureEvents = await LectureEvent.find({
-      programName: user.programName,
-      course: user.course,
-      groups: user.group,
-      $or: [{ subgroup: user.subgroup }, { subgroup: null }],
+      programName: foundUser.programName,
+      course: foundUser.course,
+      groups: foundUser.group,
+      $or: [{ subgroup: foundUser.subgroup }, { subgroup: null }],
       $and: [
         {
           startDateTime: {

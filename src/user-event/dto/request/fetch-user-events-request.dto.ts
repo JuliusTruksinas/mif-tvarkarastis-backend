@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsString } from 'class-validator';
 
 export class FetchUserEventsRequestDto {
   @IsNotEmpty()
@@ -8,4 +8,8 @@ export class FetchUserEventsRequestDto {
   @IsNotEmpty()
   @IsDateString()
   endDateTime: string;
+
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
 }
