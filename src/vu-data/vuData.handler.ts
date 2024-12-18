@@ -10,23 +10,9 @@ interface GroupData {
   scrapingUrl: string;
 }
 
-const isLectureAlreadySaved = async (
-  lectureData: ReturnType<LectureParser['getAllData']>,
-) => {
-  const { startDateTime, endDateTime, title, programName, course, groups } =
-    lectureData;
-
-  const existingLecture = await LectureEvent.findOne({
-    startDateTime,
-    endDateTime,
-    title,
-    programName,
-    course,
-    groups: { $all: groups },
-  });
-
-  return existingLecture !== null;
-};
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 const updateLectures = async (
   groupData: GroupData,
@@ -37,22 +23,16 @@ const updateLectures = async (
   const { events } = await response.json();
 
   for (const event of events) {
-    const parsedLecture = new LectureParser(event, programName, course);
+    const parsedLecture = new LectureParser(
+      event,
+      programName,
+      course,
+      +groupData.group,
+    );
 
-    if (parsedLecture.title && parsedLecture.title.includes('atostogos')) {
-      continue;
-    }
-
-    if (parsedLecture.groups && parsedLecture.groups.length === 1) {
+    try {
       await LectureEvent.create(parsedLecture.getAllData());
-      continue;
-    }
-
-    if (await isLectureAlreadySaved(parsedLecture.getAllData())) {
-      continue;
-    }
-
-    await LectureEvent.create(parsedLecture.getAllData());
+    } catch (err) {}
   }
 };
 
@@ -64,13 +44,7 @@ export const updateLecturesHandler = catchAsync(
       1,
     );
 
-    // TODO: in the future don't filter only by one programName, add more
-    const filteredProgramOptions = programOptions.filter(
-      (programOption) =>
-        programOption.value === 'Informacinių sistemų inžinerija',
-    );
-
-    for (const programOption of filteredProgramOptions) {
+    for (const programOption of programOptions) {
       const courseOptions =
         await UniversityProgramScraper.getProgramCoursesOptions(
           1,
@@ -86,6 +60,7 @@ export const updateLecturesHandler = catchAsync(
           );
 
         for (const groupData of groupsData) {
+          await delay(2000);
           await updateLectures(
             groupData,
             programOption.value,

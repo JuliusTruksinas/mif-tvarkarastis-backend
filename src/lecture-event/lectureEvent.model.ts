@@ -24,8 +24,8 @@ const lectureEventSchema = new mongoose.Schema<ILectureEvent>({
     type: Number,
     required: true,
   },
-  groups: {
-    type: [Number],
+  group: {
+    type: Number,
     required: true,
   },
   subgroup: {

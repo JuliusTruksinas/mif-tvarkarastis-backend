@@ -1,5 +1,4 @@
 import * as cheerio from 'cheerio';
-
 import { convertToUTC } from '../helpers/time';
 
 enum Location {
@@ -18,11 +17,11 @@ export class LectureParser {
   // properties that don't need to be computed
   private readonly _programName: string;
   private readonly _course: number;
+  private readonly _group: number;
 
   // properties that need to be computed
   private _title: string | undefined | null = undefined;
   private _lectureTypes: string[] | undefined | null = undefined;
-  private _groups: number[] | undefined | null = undefined;
   private _lecturer: string | undefined | null = undefined;
   private _dataRooms: string[] | undefined | null = undefined;
   private _room: number | undefined | null = undefined;
@@ -30,12 +29,13 @@ export class LectureParser {
   private _comment: string | undefined | null = undefined;
   private _subgroup: string | undefined | null = undefined;
 
-  constructor(event: any, programName: string, course: number) {
+  constructor(event: any, programName: string, course: number, group: number) {
     this.event = event;
     this.$ = cheerio.load(event.title);
 
     this._programName = programName;
     this._course = course;
+    this._group = group;
   }
 
   public get title() {
@@ -43,10 +43,8 @@ export class LectureParser {
       return this._title;
     }
 
-    const parsedTitle: string | null =
-      this.$(this.$('a').attr('data-title'))?.find('a')?.text() ||
-      this.event?.title?.trim() ||
-      null;
+    const dataTitle = this.$('a').attr('data-title');
+    const parsedTitle = this.$(dataTitle)?.text() || null;
 
     this._title = parsedTitle;
 
@@ -58,36 +56,21 @@ export class LectureParser {
       return this._lectureTypes;
     }
 
-    const parsedLectureTypes =
-      this.$(this.$('a').attr('data-showed_type'))
-        ?.text()
-        ?.replace('Tipas: ', '')
-        ?.replace(', ', ' ')
-        ?.replace('ir ', '')
-        ?.split(' ')
-        ?.map((type) => type?.toLowerCase()?.trim()) || null;
+    const dataShowedType = this.$('a').attr('data-showed_type');
+    const innerText = this.$(dataShowedType).text();
+
+    const parsedLectureTypes = innerText
+      .split(' ')
+      .slice(1)
+      .map((type) => type.replace(/[^a-zA-Z]/g, '').trim());
 
     this._lectureTypes = parsedLectureTypes;
 
     return parsedLectureTypes;
   }
 
-  public get groups() {
-    if (this._groups !== undefined) {
-      return this._groups;
-    }
-
-    const parsedGroups =
-      this.$(this.$('a').attr('data-groups'))
-        ?.find('a')
-        ?.text()
-        ?.split('gr.')
-        ?.slice(0, -1)
-        ?.map((group) => parseInt(group)) || null;
-
-    this._groups = parsedGroups;
-
-    return parsedGroups;
+  public get group() {
+    return this._group;
   }
 
   public get lecturer() {
@@ -214,18 +197,18 @@ export class LectureParser {
 
   public getAllData() {
     return {
+      programName: this.programName,
+      course: this.course,
+      group: this.group,
+      subgroup: this.subgroup,
       title: this.title,
       lectureTypes: this.lectureTypes,
-      groups: this.groups,
       lecturer: this.lecturer,
       room: this.room,
       location: this.location,
       comment: this.comment,
-      subgroup: this.subgroup,
       startDateTime: this.startDateTime,
       endDateTime: this.endDateTime,
-      programName: this.programName,
-      course: this.course,
     };
   }
 }
