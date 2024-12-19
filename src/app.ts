@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-// import swaggerUi from 'swagger-ui-express';
 import authRoutes from './auth/auth.routes';
 import AppError from './utils/appError';
 import { globalErrorHandler } from './error/error.handler';
@@ -10,9 +9,10 @@ import studyOptionsRoutes from './study-options/studyOptions.routes';
 import lectureEventRoutes from './lecture-event/lectureEvent.routes';
 import friendRoutes from './friend/friend.routes';
 import notificationRoutes from './notifications/notification.routes';
-// import swaggerDocs from './swagger/swaggerConfiguration';
-import vuDataRoutes from './vu-data/vuData.routes';
 import { detectTimezone } from './middleware/detectTimeZone';
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerDocs from './swaggerConfiguration';
+// import vuDataRoutes from './vu-data/vuData.routes';
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use('/api/users/friends', userRoutes);
 app.use('/api/lecture-events', lectureEventRoutes);
 app.use('/api/friends', friendRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use('/api/vu-data', vuDataRoutes);
+// TODO: Implament internal cron-job  app.use('/api/vu-data', vuDataRoutes);
 
 // app.get('/api/api-docs/json', (req, res) => {
 //   res.json(swaggerDocs);

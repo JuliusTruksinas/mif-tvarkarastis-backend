@@ -1,12 +1,6 @@
 import * as cheerio from 'cheerio';
 import { convertToUTC } from '../helpers/time';
 
-enum Location {
-  NAUGARDUKAS = 'naugardukas',
-  SALTINIAI = 'šaltiniai',
-  DIDLAUKIS = 'didlaukis',
-}
-
 // TODO: add types
 export class LectureParser {
   // internal properties
@@ -23,8 +17,6 @@ export class LectureParser {
   private _title: string | undefined | null = undefined;
   private _lectureTypes: string[] | undefined | null = undefined;
   private _lecturer: string | undefined | null = undefined;
-  private _dataRooms: string[] | undefined | null = undefined;
-  private _room: number | undefined | null = undefined;
   private _location: string | undefined | null = undefined;
   private _comment: string | undefined | null = undefined;
   private _subgroup: string | undefined | null = undefined;
@@ -44,7 +36,7 @@ export class LectureParser {
     }
 
     const dataTitle = this.$('a').attr('data-title');
-    const parsedTitle = this.$(dataTitle)?.text() || null;
+    const parsedTitle = this.$(dataTitle)?.text()?.trim() || null;
 
     this._title = parsedTitle;
 
@@ -57,12 +49,18 @@ export class LectureParser {
     }
 
     const dataShowedType = this.$('a').attr('data-showed_type');
-    const innerText = this.$(dataShowedType).text();
+    const innerText = this.$(dataShowedType).text()?.trim();
 
     const parsedLectureTypes = innerText
       .split(' ')
       .slice(1)
-      .map((type) => type.replace(/[^a-zA-Z]/g, '').trim());
+      .filter((type) => type.trim().length > 2)
+      .map((type) =>
+        type
+          .toLowerCase()
+          .replace(/[^a-zA-Z]/g, '')
+          .trim(),
+      );
 
     this._lectureTypes = parsedLectureTypes;
 
@@ -78,61 +76,22 @@ export class LectureParser {
       return this._lecturer;
     }
 
-    const parsedLecturer =
-      this.$(this.$('a').attr('data-academics'))?.find('a')?.text()?.trim() ||
-      null;
+    const dataAcademics = this.$('a').attr('data-academics');
+    const parsedLecturer = this.$(dataAcademics)?.text()?.trim() || null;
 
     this._lecturer = parsedLecturer;
 
     return parsedLecturer;
   }
 
-  private get dataRooms() {
-    if (this._dataRooms !== undefined) {
-      return this._dataRooms;
-    }
-
-    const parsedDataRooms = this.$(this.$('a').attr('data-rooms'))
-      ?.find('a')
-      ?.text()
-      ?.replace('(MIF-Šalt.)', Location.SALTINIAI)
-      ?.replace('(MIF-Naug.)', Location.NAUGARDUKAS)
-      ?.replace('(MIF-Didl.)', Location.DIDLAUKIS)
-      ?.replace('S-', '')
-      ?.split(' ');
-
-    this._dataRooms = parsedDataRooms;
-
-    return parsedDataRooms;
-  }
-
-  public get room() {
-    if (this._room !== undefined) {
-      return this._room;
-    }
-
-    const dataRooms = this.dataRooms;
-
-    const parsedRoom = !dataRooms ? null : parseInt(dataRooms[0]) || null;
-
-    this._room = parsedRoom;
-
-    return parsedRoom;
-  }
-
   public get location() {
     if (this._location !== undefined) {
       return this._location;
     }
+    const dataRooms = this.$(this.$('a').attr('data-rooms'));
 
-    const dataRooms = this.dataRooms;
-
-    const parsedLocation = !dataRooms
-      ? this.$(this.$('a').attr('data-rooms'))
-          ?.text()
-          ?.replace('Patalpos: ', '')
-          ?.trim() || null
-      : dataRooms[1]?.trim() || null;
+    const parsedLocation =
+      this.$(dataRooms)?.text()?.replace('Patalpos: ', '')?.trim() || null;
 
     this._location = parsedLocation;
 
@@ -144,11 +103,10 @@ export class LectureParser {
       return this._comment;
     }
 
+    const dataComments = this.$('a').attr('data-comments');
+
     const parsedComment =
-      this.$(this.$('a').attr('data-comments'))
-        ?.text()
-        ?.replace('Komentarai: ', '')
-        ?.trim() || null;
+      this.$(dataComments)?.text()?.replace('Komentarai: ', '')?.trim() || null;
 
     this._comment = parsedComment;
 
@@ -160,11 +118,10 @@ export class LectureParser {
       return this._subgroup;
     }
 
+    const dataSubgroup = this.$('a').attr('data-subgroups');
+
     const parsedSubgroup =
-      this.$(this.$('a').attr('data-subgroups'))
-        ?.text()
-        ?.replace('Pogrupiai: ', '')
-        ?.trim() || null;
+      this.$(dataSubgroup)?.text()?.replace('Pogrupiai: ', '')?.trim() || null;
 
     this._subgroup = parsedSubgroup;
 
@@ -204,7 +161,6 @@ export class LectureParser {
       title: this.title,
       lectureTypes: this.lectureTypes,
       lecturer: this.lecturer,
-      room: this.room,
       location: this.location,
       comment: this.comment,
       startDateTime: this.startDateTime,

@@ -1,8 +1,8 @@
-import express from 'express';
-import { updateLecturesHandler } from './vuData.handler';
+// import express from 'express';
+// import { updateLecturesHandler } from './vuData.handler';
 
-const vuDataRoutes = express.Router();
+// const vuDataRoutes = express.Router();
 
-vuDataRoutes.patch('/lectures', updateLecturesHandler);
+// vuDataRoutes.patch('/lectures', updateLecturesHandler);
 
-export default vuDataRoutes;
+// export default vuDataRoutes;

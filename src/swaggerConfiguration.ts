@@ -9,11 +9,7 @@ const swaggerOptions = {
       description: 'API documentation of MIF tvarkarastis project',
     },
   },
-  apis: [
-    '../**/*.docs.ts',
-    '!../**/node_modules/**',
-    '!../**/etc/ssl/private/**',
-  ],
+  apis: ['./docs/*.docs.ts'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
