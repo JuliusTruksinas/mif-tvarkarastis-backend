@@ -7,6 +7,8 @@ import {
   deleteUserEvent,
   fetchUserEvents,
   updateUserEvent,
+  deleteRepeatableEvents,
+  updateRepeatableEvent,
 } from './userEvent.handler';
 import { UpdateUserEventDto } from './dto/request/update-user-event.dto';
 import { GetUserLectureEventsRequestDto } from '../lecture-event/dto/request/get-user-lecture-events.dto';
@@ -35,5 +37,17 @@ userEventRoutes.patch(
 );
 
 userEventRoutes.delete('/:userEventId', protect, deleteUserEvent);
+
+userEventRoutes.delete(
+  '/repeatable-group/:repeatableId',
+  protect,
+  deleteRepeatableEvents,
+);
+
+userEventRoutes.patch(
+  '/:repeatable-group/:repeatableId',
+  protect,
+  updateRepeatableEvent,
+);
 
 export default userEventRoutes;

@@ -16,6 +16,12 @@ export const getAllStudyTypesOptions = (req, res, next) => {
 };
 
 export const getAllProgramsOptions = catchAsync(async (req, res, next) => {
+  const EXCLUDED_PROGRAMS_OPTIONS = [
+    'Bendrosios universitetinės studijos',
+    'Individualiųjų studijų dalykas (modulis)',
+    'Kartojantys kursą',
+  ];
+
   const { studyType }: GetProgramsOptionsDto = req.body;
 
   const allProgramsOptions =
@@ -23,7 +29,10 @@ export const getAllProgramsOptions = catchAsync(async (req, res, next) => {
 
   res.json({
     status: ResponseStatus.SUCCESS,
-    data: allProgramsOptions,
+    data: allProgramsOptions.filter(
+      (programOption) =>
+        !EXCLUDED_PROGRAMS_OPTIONS.includes(programOption.value),
+    ),
   });
 });
 

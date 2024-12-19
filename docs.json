@@ -1,0 +1,792 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MIF tvarkarastis API",
+    "version": "1.0.0",
+    "description": "API documentation generated for MIF tvarkarastis project."
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "User already exists"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login a user",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful"
+          },
+          "400": {
+            "description": "User does not exist"
+          },
+          "401": {
+            "description": "Incorrect password"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "post": {
+        "summary": "Get current user info",
+        "tags": ["Authentication"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User info retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentUserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/remind-password": {
+      "post": {
+        "summary": "Remind password",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemindPasswordRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reminder sent"
+          },
+          "400": {
+            "description": "User does not exist"
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "summary": "Reset password",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successful"
+          },
+          "400": {
+            "description": "Password reset token invalid or passwords do not match"
+          }
+        }
+      }
+    },
+    "/auth/check-reset-password-token/{resetPasswordToken}": {
+      "get": {
+        "summary": "Check reset password token validity",
+        "tags": ["Authentication"],
+        "parameters": [
+          {
+            "name": "resetPasswordToken",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token validity checked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/friends/request/{friendId}": {
+      "post": {
+        "summary": "Send a friend request",
+        "tags": ["Friends"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "friendId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend request sent"
+          },
+          "400": {
+            "description": "Request failed"
+          }
+        }
+      }
+    },
+    "/friends/accept/{friendId}": {
+      "post": {
+        "summary": "Accept a friend request",
+        "tags": ["Friends"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "friendId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend request accepted"
+          },
+          "400": {
+            "description": "Request failed"
+          }
+        }
+      }
+    },
+    "/friends/decline/{friendId}": {
+      "post": {
+        "summary": "Decline a friend request",
+        "tags": ["Friends"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "friendId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend request declined"
+          },
+          "400": {
+            "description": "Request failed"
+          }
+        }
+      }
+    },
+    "/friends/remove/{friendId}": {
+      "delete": {
+        "summary": "Remove a friend",
+        "tags": ["Friends"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "friendId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend removed"
+          },
+          "400": {
+            "description": "Request failed"
+          }
+        }
+      }
+    },
+    "/lecture-events": {
+      "post": {
+        "summary": "Get user lecture events",
+        "tags": ["Lecture Events"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserLectureEventsRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lecture events retrieved"
+          },
+          "400": {
+            "description": "Request failed"
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "summary": "Get all unread notifications",
+        "tags": ["Notifications"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Unread notifications retrieved"
+          },
+          "400": {
+            "description": "Failed to retrieve notifications"
+          }
+        }
+      }
+    },
+    "/notifications/{notificationId}/seen": {
+      "patch": {
+        "summary": "Set a notification to seen",
+        "tags": ["Notifications"],
+        "parameters": [
+          {
+            "name": "notificationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification marked as seen"
+          },
+          "400": {
+            "description": "Failed to update notification"
+          }
+        }
+      }
+    },
+    "/study-options/types-options": {
+      "get": {
+        "summary": "Get all study types options",
+        "tags": ["Study Options"],
+        "responses": {
+          "200": {
+            "description": "Study types options retrieved"
+          }
+        }
+      }
+    },
+    "/study-options/programs-options": {
+      "post": {
+        "summary": "Get all programs options",
+        "tags": ["Study Options"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetProgramsOptionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Programs options retrieved"
+          }
+        }
+      }
+    },
+    "/study-options/courses-options": {
+      "post": {
+        "summary": "Get all courses options",
+        "tags": ["Study Options"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetCoursesOptionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Courses options retrieved"
+          }
+        }
+      }
+    },
+    "/study-options/groups-options": {
+      "post": {
+        "summary": "Get all groups options",
+        "tags": ["Study Options"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetGroupsOptionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Groups options retrieved"
+          }
+        }
+      }
+    },
+    "/study-options/subgroups-options": {
+      "get": {
+        "summary": "Get all subgroups options",
+        "tags": ["Study Options"],
+        "responses": {
+          "200": {
+            "description": "Subgroups options retrieved"
+          }
+        }
+      }
+    },
+    "/user-events": {
+      "post": {
+        "summary": "Create a user event",
+        "tags": ["User Events"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User event created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserEventResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-events/fetch": {
+      "patch": {
+        "summary": "Fetch user events",
+        "tags": ["User Events"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FetchUserEventsRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User events retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserEvent"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-events/{userEventId}": {
+      "patch": {
+        "summary": "Update a user event",
+        "tags": ["User Events"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "userEventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User event updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserEventResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a user event",
+        "tags": ["User Events"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "userEventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User event deleted"
+          }
+        }
+      }
+    },
+    "/users": {
+      "patch": {
+        "summary": "Change user information",
+        "tags": ["User Management"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeUserInfoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User information updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeUserInfoResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/search": {
+      "get": {
+        "summary": "Search for users",
+        "tags": ["User Management"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SendBasicUserInfoResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/friends": {
+      "get": {
+        "summary": "Get all friends",
+        "tags": ["User Management"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Friends retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SendBasicUserInfoResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "email": { "type": "string" },
+          "password": { "type": "string" },
+          "studyType": { "type": "string" },
+          "group": { "type": "string" },
+          "subgroup": { "type": "string" },
+          "programName": { "type": "string" },
+          "course": { "type": "integer" }
+        }
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "GetCurrentUserDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "email": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" }
+        }
+      },
+      "RemindPasswordRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" }
+        }
+      },
+      "ResetPasswordRequestDto": {
+        "type": "object",
+        "properties": {
+          "resetPasswordToken": { "type": "string" },
+          "newPassword": { "type": "string" },
+          "repeatedPassword": { "type": "string" }
+        }
+      },
+      "GetUserLectureEventsRequestDto": {
+        "type": "object",
+        "properties": {
+          "startDateTime": { "type": "string", "format": "date-time" },
+          "endDateTime": { "type": "string", "format": "date-time" },
+          "userId": { "type": "string" }
+        }
+      },
+      "GetProgramsOptionsDto": {
+        "type": "object",
+        "properties": {
+          "studyType": { "type": "integer" }
+        }
+      },
+      "GetCoursesOptionsDto": {
+        "type": "object",
+        "properties": {
+          "studyType": { "type": "integer" },
+          "studyProgramName": { "type": "string" }
+        }
+      },
+      "GetGroupsOptionsDto": {
+        "type": "object",
+        "properties": {
+          "studyType": { "type": "integer" },
+          "studyProgramName": { "type": "string" },
+          "course": { "type": "integer" }
+        }
+      },
+      "CreateUserEventDto": {
+        "type": "object",
+        "properties": {
+          "startDateTime": { "type": "string", "format": "date-time" },
+          "endDateTime": { "type": "string", "format": "date-time" },
+          "title": { "type": "string" },
+          "note": { "type": "string" },
+          "location": { "type": "string" },
+          "repeatable": { "type": "boolean" },
+          "repeatableUntil": { "type": "string", "format": "date-time" }
+        }
+      },
+      "FetchUserEventsRequestDto": {
+        "type": "object",
+        "properties": {
+          "startDateTime": { "type": "string", "format": "date-time" },
+          "endDateTime": { "type": "string", "format": "date-time" },
+          "userId": { "type": "string" }
+        }
+      },
+      "UpdateUserEventDto": {
+        "type": "object",
+        "properties": {
+          "startDateTime": { "type": "string", "format": "date-time" },
+          "endDateTime": { "type": "string", "format": "date-time" },
+          "title": { "type": "string" },
+          "note": { "type": "string" },
+          "location": { "type": "string" }
+        }
+      },
+      "CreateUserEventResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "startDateTime": { "type": "string", "format": "date-time" },
+          "endDateTime": { "type": "string", "format": "date-time" },
+          "title": { "type": "string" },
+          "note": { "type": "string" },
+          "location": { "type": "string" }
+        }
+      },
+      "UpdateUserEventResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "startDateTime": { "type": "string", "format": "date-time" },
+          "endDateTime": { "type": "string", "format": "date-time" },
+          "title": { "type": "string" },
+          "note": { "type": "string" },
+          "location": { "type": "string" }
+        }
+      },
+      "UserEvent": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "startDateTime": { "type": "string", "format": "date-time" },
+          "endDateTime": { "type": "string", "format": "date-time" },
+          "title": { "type": "string" },
+          "note": { "type": "string" },
+          "location": { "type": "string" },
+          "repeatable": { "type": "boolean" },
+          "repeatableUntil": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ChangeUserInfoDto": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "email": { "type": "string" },
+          "password": { "type": "string" },
+          "studyType": { "type": "integer" },
+          "programName": { "type": "string" },
+          "course": { "type": "integer" },
+          "group": { "type": "integer" },
+          "subgroup": { "type": "integer" }
+        }
+      },
+      "ChangeUserInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "email": { "type": "string" },
+          "programName": { "type": "string" },
+          "course": { "type": "integer" },
+          "group": { "type": "integer" },
+          "subgroup": { "type": "integer" }
+        }
+      },
+      "SendBasicUserInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "email": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "programName": { "type": "string" },
+          "course": { "type": "integer" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

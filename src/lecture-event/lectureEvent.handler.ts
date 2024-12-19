@@ -33,24 +33,19 @@ export const getUserLectureEvents = catchAsync(
       );
     }
 
-    const lectureEvents = await LectureEvent.find({
-      programName: foundUser.programName,
-      course: foundUser.course,
-      group: foundUser.group,
-      $or: [{ subgroup: foundUser.subgroup }, { subgroup: null }],
-      $and: [
-        {
-          startDateTime: {
-            $gte: new Date(convertToUTC(startDateTime, req.timezone)),
-          },
-        },
-        {
-          endDateTime: {
-            $lte: new Date(convertToUTC(endDateTime, req.timezone)),
-          },
-        },
-      ],
-    }).lean();
+    const lectureEvents = await LectureEvent.find()
+      .where('programName')
+      .equals(foundUser.programName)
+      .where('course')
+      .equals(foundUser.course)
+      .where('group')
+      .equals(foundUser.group)
+      .or([{ subgroup: foundUser.subgroup }, { subgroup: null }])
+      .where('startDateTime')
+      .gte(new Date(convertToUTC(startDateTime, req.timezone)).getTime())
+      .where('endDateTime')
+      .lte(new Date(convertToUTC(endDateTime, req.timezone)).getTime())
+      .lean();
 
     res.json({
       status: 'success',
