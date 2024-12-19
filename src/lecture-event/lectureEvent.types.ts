@@ -13,5 +13,4 @@ export interface ILectureEvent extends Document {
   lectureTypes: string[];
   comment?: string;
   location: string;
-  room?: number;
 }

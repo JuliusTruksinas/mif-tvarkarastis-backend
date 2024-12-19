@@ -61,6 +61,45 @@ export const fetchUserEvents = catchAsync(
   },
 );
 
+const repeatUserEvents = async (req: AuthenticatedRequest) => {
+  const {
+    startDateTime,
+    endDateTime,
+    title,
+    note,
+    location,
+    repeatable,
+    repeatableUntil,
+  }: CreateUserEventDto = req.body;
+  let TemporaryDate = new Date(startDateTime);
+  let repeatableUntilDate = new Date(repeatableUntil);
+  let Counter = 0;
+
+  while (TemporaryDate <= repeatableUntilDate) {
+    let StartDateAsADateObject = new Date(startDateTime);
+    let EndDateAsADateObject = new Date(endDateTime);
+    TemporaryDate.setDate(TemporaryDate.getDate() + 7);
+    StartDateAsADateObject.setDate(
+      StartDateAsADateObject.getDate() + 7 * Counter,
+    );
+    const UpdaterStartDateString = StartDateAsADateObject.toISOString();
+    EndDateAsADateObject.setDate(EndDateAsADateObject.getDate() + 7 * Counter);
+    const UpdatedEndDateString = EndDateAsADateObject.toISOString();
+    Counter++;
+
+    await UserEvent.create({
+      startDateTime: convertToUTC(UpdaterStartDateString, req.timezone),
+      endDateTime: convertToUTC(UpdatedEndDateString, req.timezone),
+      title,
+      note,
+      location,
+      repeatable,
+      repeatableUntil,
+      user: req.user,
+    });
+  }
+};
+
 export const createUserEvent = catchAsync(
   async (req: AuthenticatedRequest, res, next) => {
     const {
@@ -70,30 +109,33 @@ export const createUserEvent = catchAsync(
       note,
       location,
       repeatable,
-      repeatableUntil,
     }: CreateUserEventDto = req.body;
 
     if (new Date(startDateTime) >= new Date(endDateTime)) {
       return next(new AppError('Start time must be before end time', 400));
     }
 
-    const createdUserEvent = await UserEvent.create({
-      startDateTime: convertToUTC(startDateTime, req.timezone),
-      endDateTime: convertToUTC(endDateTime, req.timezone),
-      title,
-      note,
-      location,
-      repeatable,
-      repeatableUntil,
-      user: req.user,
-    });
+    if (!repeatable) {
+      const createdUserEvent = await UserEvent.create({
+        startDateTime: convertToUTC(startDateTime, req.timezone),
+        endDateTime: convertToUTC(endDateTime, req.timezone),
+        title,
+        note,
+        location,
+        user: req.user,
+      });
 
-    req.user.events.push(createdUserEvent.id);
-    await req.user.save();
+      return res.json({
+        status: ResponseStatus.SUCESS,
+        data: new CreateUserEventResponseDto(createdUserEvent),
+      });
+    }
+
+    repeatUserEvents(req);
 
     res.json({
       status: ResponseStatus.SUCESS,
-      data: new CreateUserEventResponseDto(createdUserEvent),
+      data: null,
     });
   },
 );
@@ -118,8 +160,6 @@ export const updateUserEvent = catchAsync(
     }
 
     if (!req.user.events.includes(userEvent.id)) {
-      console.log(req.user.events);
-      console.log(userEvent.id);
       return next(new AppError("You can't edit other peoples' events", 400));
     }
 

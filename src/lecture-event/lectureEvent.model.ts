@@ -48,13 +48,9 @@ const lectureEventSchema = new mongoose.Schema<ILectureEvent>({
   },
   location: {
     type: String,
-    required: false,
+    required: true,
     maxlength: 100,
     minlength: 1,
-  },
-  room: {
-    type: Number,
-    required: false,
   },
 });
 
