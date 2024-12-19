@@ -87,7 +87,7 @@ const repeatUserEvents = async (req: AuthenticatedRequest) => {
     const UpdatedEndDateString = EndDateAsADateObject.toISOString();
     Counter++;
 
-    await UserEvent.create({
+    const createdUserEvent = await UserEvent.create({
       startDateTime: convertToUTC(UpdaterStartDateString, req.timezone),
       endDateTime: convertToUTC(UpdatedEndDateString, req.timezone),
       title,
@@ -97,6 +97,9 @@ const repeatUserEvents = async (req: AuthenticatedRequest) => {
       repeatableUntil,
       user: req.user,
     });
+
+    req.user.events.push(createdUserEvent.id);
+    await req.user.save();
   }
 };
 
@@ -124,6 +127,9 @@ export const createUserEvent = catchAsync(
         location,
         user: req.user,
       });
+
+      req.user.events.push(createdUserEvent.id);
+      await req.user.save();
 
       return res.json({
         status: ResponseStatus.SUCCESS,
@@ -212,5 +218,65 @@ export const deleteUserEvent = catchAsync(async (req, res, next) => {
   res.json({
     status: ResponseStatus.SUCCESS,
     data: null,
+  });
+});
+
+export const updateRepeatableEvent = catchAsync(async (req, res, next) => {
+  const { repeatableId } = req.params;
+  const userEvent = await UserEvent.findOne({ repeatableId });
+
+  if (!userEvent) {
+    return next(
+      new AppError('User event with provided ID does not exist', 400),
+    );
+  }
+
+  if (!req.user.events.includes(userEvent.id)) {
+    return next(new AppError("You can't delete other peoples' events", 400));
+  }
+
+  const deletedEvents = await UserEvent.find({ repeatableId: repeatableId });
+  const deletedEventIds = deletedEvents.map((event) => event.id);
+
+  await UserEvent.deleteMany({ repeatableId: repeatableId });
+
+  await User.updateOne(
+    { _id: req.user._id },
+    { $pull: { events: { $in: deletedEventIds } } },
+  );
+  repeatUserEvents(req);
+
+  res.json({
+    status: ResponseStatus.SUCCESS,
+    data: null,
+  });
+});
+
+export const deleteRepeatableEvents = catchAsync(async (req, res, next) => {
+  const { repeatableId } = req.params;
+  const userEvent = await UserEvent.findOne({ repeatableId });
+
+  if (!userEvent) {
+    return next(
+      new AppError('User event with provided ID does not exist', 400),
+    );
+  }
+
+  if (!req.user.events.includes(userEvent.id)) {
+    return next(new AppError("You can't delete other peoples' events", 400));
+  }
+
+  const deletedEvents = await UserEvent.find({ repeatableId: repeatableId });
+  const deletedEventIds = deletedEvents.map((event) => event.id);
+
+  await UserEvent.deleteMany({ repeatableId: repeatableId });
+
+  await User.updateOne(
+    { _id: req.user._id },
+    { $pull: { events: { $in: deletedEventIds } } },
+  );
+
+  res.json({
+    status: ResponseStatus.SUCCESS,
   });
 });

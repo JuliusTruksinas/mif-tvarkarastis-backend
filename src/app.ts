@@ -10,9 +10,6 @@ import lectureEventRoutes from './lecture-event/lectureEvent.routes';
 import friendRoutes from './friend/friend.routes';
 import notificationRoutes from './notifications/notification.routes';
 import { detectTimezone } from './middleware/detectTimeZone';
-// import swaggerUi from 'swagger-ui-express';
-// import swaggerDocs from './swaggerConfiguration';
-// import vuDataRoutes from './vu-data/vuData.routes';
 
 const app = express();
 
@@ -29,12 +26,6 @@ app.use('/api/lecture-events', lectureEventRoutes);
 app.use('/api/friends', friendRoutes);
 app.use('/api/notifications', notificationRoutes);
 // TODO: Implament internal cron-job  app.use('/api/vu-data', vuDataRoutes);
-
-// app.get('/api/api-docs/json', (req, res) => {
-//   res.json(swaggerDocs);
-// });
-
-// app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.all('*', (req, res, next) => {
   next(
