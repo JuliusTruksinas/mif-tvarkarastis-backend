@@ -124,7 +124,6 @@ export const deleteRepeatableEvents = catchAsync(async (req, res, next) => {
   const deletedEventIds = deletedEvents.map((event) => event.id);
 
   await UserEvent.deleteMany({ repeatableId: repeatableId });
-  console.log('Deleted event IDs:', deletedEventIds);
 
   await User.updateOne(
     { _id: req.user._id },
