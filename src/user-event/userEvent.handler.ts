@@ -11,6 +11,7 @@ import { convertToUTC } from '../helpers/time';
 import { AuthenticatedRequest } from '../domain/authenticatedRequest';
 import { GetUserLectureEventsRequestDto } from '../lecture-event/dto/request/get-user-lecture-events.dto';
 import { User } from '../user/user.model';
+import mongoose from 'mongoose';
 
 export const fetchUserEvents = catchAsync(
   async (req: AuthenticatedRequest, res, next) => {
@@ -62,6 +63,8 @@ export const fetchUserEvents = catchAsync(
 );
 
 const repeatUserEvents = async (req: AuthenticatedRequest) => {
+  const uniqueId = new mongoose.Types.ObjectId();
+
   const {
     startDateTime,
     endDateTime,
@@ -87,7 +90,7 @@ const repeatUserEvents = async (req: AuthenticatedRequest) => {
     const UpdatedEndDateString = EndDateAsADateObject.toISOString();
     Counter++;
 
-    await UserEvent.create({
+    const createdUserEvent = await UserEvent.create({
       startDateTime: convertToUTC(UpdaterStartDateString, req.timezone),
       endDateTime: convertToUTC(UpdatedEndDateString, req.timezone),
       title,
@@ -96,9 +99,42 @@ const repeatUserEvents = async (req: AuthenticatedRequest) => {
       repeatable,
       repeatableUntil,
       user: req.user,
+      repeatableId: uniqueId,
     });
+    req.user.events.push(createdUserEvent.id);
+    await req.user.save();
   }
 };
+
+export const deleteRepeatableEvents = catchAsync(async (req, res, next) => {
+  const { repeatableId } = req.params;
+  const userEvent = await UserEvent.findOne({ repeatableId });
+
+  if (!userEvent) {
+    return next(
+      new AppError('User event with provided ID does not exist', 400),
+    );
+  }
+
+  if (!req.user.events.includes(userEvent.id)) {
+    return next(new AppError("You can't delete other peoples' events", 400));
+  }
+
+  const deletedEvents = await UserEvent.find({ repeatableId: repeatableId });
+  const deletedEventIds = deletedEvents.map((event) => event.id);
+
+  await UserEvent.deleteMany({ repeatableId: repeatableId });
+  console.log('Deleted event IDs:', deletedEventIds);
+
+  await User.updateOne(
+    { _id: req.user._id },
+    { $pull: { events: { $in: deletedEventIds } } },
+  );
+
+  res.json({
+    status: ResponseStatus.SUCESS,
+  });
+});
 
 export const createUserEvent = catchAsync(
   async (req: AuthenticatedRequest, res, next) => {
@@ -124,6 +160,9 @@ export const createUserEvent = catchAsync(
         location,
         user: req.user,
       });
+
+      req.user.events.push(createdUserEvent.id);
+      await req.user.save();
 
       return res.json({
         status: ResponseStatus.SUCESS,

@@ -33,8 +33,17 @@ const userEventSchema = new mongoose.Schema<IUserEvent>({
     required: true,
     default: false,
   },
+  private: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   repeatableUntil: {
     type: Date,
+    required: false,
+  },
+  repeatableId: {
+    type: String,
     required: false,
   },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
