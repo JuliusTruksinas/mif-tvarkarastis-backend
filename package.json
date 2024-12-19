@@ -1,12 +1,10 @@
 {
   "name": "mif-tvarkarastis-backend",
   "version": "1.0.0",
-  "main": "./src/main.js",
   "scripts": {
-    "start": "node ./src/main.js",
+    "start": "node ./dist/main.js",
     "dev": "nodemon",
-    "build": "tsc",
-    "heroku-postbuild": "npm install --only=dev && npm run build"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -39,6 +37,6 @@
     "@types/winston": "^2.4.4",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
+    "typescript": "^5.7.2"
   }
 }
