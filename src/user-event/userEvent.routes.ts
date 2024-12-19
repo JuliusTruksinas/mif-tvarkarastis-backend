@@ -4,6 +4,7 @@ import { CreateUserEventDto } from './dto/request/create-user-event.dto';
 import { validateDto } from '../middleware/validateDto';
 import {
   createUserEvent,
+  deleteRepeatableEvents,
   deleteUserEvent,
   fetchUserEvents,
   updateUserEvent,
@@ -35,5 +36,10 @@ userEventRoutes.patch(
 );
 
 userEventRoutes.delete('/:userEventId', protect, deleteUserEvent);
+userEventRoutes.delete(
+  '/repeatable-group/:repeatableId',
+  protect,
+  deleteRepeatableEvents,
+);
 
 export default userEventRoutes;
