@@ -47,6 +47,11 @@ const userSchema = new mongoose.Schema<IUser>({
     type: Number,
     required: true,
   },
+  resetPasswordToken: {
+    type: String,
+    required: false,
+    default: null,
+  },
   events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserEvent' }],
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
   sentFriendRequests: [

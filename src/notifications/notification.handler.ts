@@ -11,7 +11,7 @@ export const getAllNotifications = catchAsync(async (req, res, next) => {
   );
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: unreadNotifications,
   });
 });
@@ -28,7 +28,7 @@ export const setNotificationToSeen = catchAsync(async (req, res, next) => {
   await notification.save();
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: null,
   });
 });

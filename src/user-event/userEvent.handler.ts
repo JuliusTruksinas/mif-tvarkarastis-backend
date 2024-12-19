@@ -55,7 +55,7 @@ export const fetchUserEvents = catchAsync(
     }).lean();
 
     res.json({
-      status: ResponseStatus.SUCESS,
+      status: ResponseStatus.SUCCESS,
       data: userEvents.map((userEvent) => transformMongoDbObjectId(userEvent)),
     });
   },
@@ -126,7 +126,7 @@ export const createUserEvent = catchAsync(
       });
 
       return res.json({
-        status: ResponseStatus.SUCESS,
+        status: ResponseStatus.SUCCESS,
         data: new CreateUserEventResponseDto(createdUserEvent),
       });
     }
@@ -134,7 +134,7 @@ export const createUserEvent = catchAsync(
     repeatUserEvents(req);
 
     res.json({
-      status: ResponseStatus.SUCESS,
+      status: ResponseStatus.SUCCESS,
       data: null,
     });
   },
@@ -187,7 +187,7 @@ export const updateUserEvent = catchAsync(
 
     const updatedUserEvent = await userEvent.save();
     res.json({
-      status: ResponseStatus.SUCESS,
+      status: ResponseStatus.SUCCESS,
       data: new UpdateUserEventResponseDto(updatedUserEvent),
     });
   },
@@ -210,7 +210,7 @@ export const deleteUserEvent = catchAsync(async (req, res, next) => {
   await UserEvent.findOneAndDelete({ _id: userEventId });
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: null,
   });
 });

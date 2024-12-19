@@ -56,7 +56,7 @@ export const sendFriendRequest = catchAsync(async (req, res, next) => {
   await req.user.save();
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: null,
   });
 });
@@ -90,7 +90,7 @@ export const removeFriend = catchAsync(async (req, res, next) => {
   }
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: null,
   });
 });
@@ -134,7 +134,7 @@ export const acceptFriendRequest = catchAsync(async (req, res, next) => {
   await friendToAccept.save();
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: null,
   });
 });
@@ -167,7 +167,7 @@ export const declineFriendRequest = catchAsync(async (req, res, next) => {
   await friendToDecline.save();
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: null,
   });
 });

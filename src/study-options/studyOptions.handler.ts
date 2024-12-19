@@ -10,7 +10,7 @@ export const getAllStudyTypesOptions = (req, res, next) => {
     UniversityProgramScraper.getAllStudyTypesOptions();
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: allStudyTypesOptions,
   });
 };
@@ -22,7 +22,7 @@ export const getAllProgramsOptions = catchAsync(async (req, res, next) => {
     await UniversityProgramScraper.getAllProgramsOptions(studyType);
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: allProgramsOptions,
   });
 });
@@ -37,7 +37,7 @@ export const getAllCoursesOptions = catchAsync(async (req, res, next) => {
     );
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: allCoursesOptions,
   });
 });
@@ -58,7 +58,7 @@ export const getAllGroupsOptions = catchAsync(async (req, res, next) => {
   }));
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: groupsOptions,
   });
 });
@@ -67,7 +67,7 @@ export const getAllSubgroupsOptions = (req, res, next) => {
   const allSubgroupsOptions = UniversityProgramScraper.getAllSubgroupsOptions();
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: allSubgroupsOptions,
   });
 };

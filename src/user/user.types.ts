@@ -11,6 +11,7 @@ export interface IUser extends Document {
   course: number;
   group: number;
   subgroup: number;
+  resetPasswordToken: string | null;
   events: mongoose.ObjectId[];
   friends: mongoose.ObjectId[];
   sentFriendRequests: mongoose.ObjectId[];
