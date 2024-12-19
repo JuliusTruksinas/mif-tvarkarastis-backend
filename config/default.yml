@@ -3,3 +3,6 @@ server:
 
 db:
   mongoUri: 'mongodb://localhost:27017/mifTvarkarastisDb'
+
+app:
+  baseUrl: 'http://localhost:5173/'

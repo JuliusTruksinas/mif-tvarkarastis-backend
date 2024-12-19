@@ -55,7 +55,7 @@ export const getAllFriends = catchAsync(async (req, res, next) => {
   const { friends } = await req.user.populate('friends');
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: friends.map((friend) => new SendBasicUserInfoResponseDto(friend)),
   });
 });
@@ -88,7 +88,7 @@ export const changeUserInfo = catchAsync(async (req, res, next) => {
   const updatedUser = await req.user.save();
 
   res.json({
-    status: ResponseStatus.SUCESS,
+    status: ResponseStatus.SUCCESS,
     data: new ChangeUserInfoResponseDto(updatedUser),
   });
 });

@@ -77,7 +77,8 @@ export class LectureParser {
     }
 
     const dataAcademics = this.$('a').attr('data-academics');
-    const parsedLecturer = this.$(dataAcademics)?.text()?.trim() || null;
+    const parsedLecturer =
+      this.$(dataAcademics)?.text()?.replace('Dėstytojai:', '')?.trim() || null;
 
     this._lecturer = parsedLecturer;
 
