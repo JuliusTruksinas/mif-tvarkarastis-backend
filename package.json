@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node src/main.js",
     "dev": "nodemon",
-    "build": "tsc"
+    "build": "tsc",
+    "heroku-postbuild": "npm run build"
   },
   "keywords": [],
   "author": "",
