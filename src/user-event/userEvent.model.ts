@@ -28,23 +28,10 @@ const userEventSchema = new mongoose.Schema<IUserEvent>({
     maxLength: 100,
     minLength: 1,
   },
-  private: {
+  isPrivate: {
     type: Boolean,
     required: false,
     default: false,
-  },
-  repeatable: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-  repeatableId: {
-    type: String,
-    required: false,
-  },
-  repeatableUntil: {
-    type: Date,
-    required: false,
   },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });

@@ -27,11 +27,7 @@ export class CreateUserEventDto {
   @IsString()
   location?: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsBoolean()
-  repeatable: boolean;
-
-  @IsOptional()
-  @IsDateString()
-  repeatableUntil: string;
+  isPrivate: boolean;
 }
