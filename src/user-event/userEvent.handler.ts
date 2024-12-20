@@ -38,21 +38,15 @@ export const fetchUserEvents = catchAsync(
       );
     }
 
-    const userEvents = await UserEvent.find({
-      user: foundUser._id,
-      $and: [
-        {
-          startDateTime: {
-            $gte: new Date(convertToUTC(startDateTime, req.timezone)),
-          },
-        },
-        {
-          endDateTime: {
-            $lte: new Date(convertToUTC(endDateTime, req.timezone)),
-          },
-        },
-      ],
-    }).lean();
+    const userEvents = await UserEvent.find()
+      .where('user')
+      .equals(foundUser._id)
+      .where('startDateTime')
+      .gte(new Date(convertToUTC(startDateTime, req.timezone)).getTime())
+      .where('endDateTime')
+      .lte(new Date(convertToUTC(endDateTime, req.timezone)).getTime())
+      .or([{ isPrivate: false }, { user: req.user.id }])
+      .lean();
 
     res.json({
       status: ResponseStatus.SUCCESS,
@@ -60,48 +54,6 @@ export const fetchUserEvents = catchAsync(
     });
   },
 );
-
-const repeatUserEvents = async (req: AuthenticatedRequest) => {
-  const {
-    startDateTime,
-    endDateTime,
-    title,
-    note,
-    location,
-    repeatable,
-    repeatableUntil,
-  }: CreateUserEventDto = req.body;
-  let TemporaryDate = new Date(startDateTime);
-  let repeatableUntilDate = new Date(repeatableUntil);
-  let Counter = 0;
-
-  while (TemporaryDate <= repeatableUntilDate) {
-    let StartDateAsADateObject = new Date(startDateTime);
-    let EndDateAsADateObject = new Date(endDateTime);
-    TemporaryDate.setDate(TemporaryDate.getDate() + 7);
-    StartDateAsADateObject.setDate(
-      StartDateAsADateObject.getDate() + 7 * Counter,
-    );
-    const UpdaterStartDateString = StartDateAsADateObject.toISOString();
-    EndDateAsADateObject.setDate(EndDateAsADateObject.getDate() + 7 * Counter);
-    const UpdatedEndDateString = EndDateAsADateObject.toISOString();
-    Counter++;
-
-    const createdUserEvent = await UserEvent.create({
-      startDateTime: convertToUTC(UpdaterStartDateString, req.timezone),
-      endDateTime: convertToUTC(UpdatedEndDateString, req.timezone),
-      title,
-      note,
-      location,
-      repeatable,
-      repeatableUntil,
-      user: req.user,
-    });
-
-    req.user.events.push(createdUserEvent.id);
-    await req.user.save();
-  }
-};
 
 export const createUserEvent = catchAsync(
   async (req: AuthenticatedRequest, res, next) => {
@@ -111,37 +63,27 @@ export const createUserEvent = catchAsync(
       title,
       note,
       location,
-      repeatable,
     }: CreateUserEventDto = req.body;
 
     if (new Date(startDateTime) >= new Date(endDateTime)) {
       return next(new AppError('Start time must be before end time', 400));
     }
 
-    if (!repeatable) {
-      const createdUserEvent = await UserEvent.create({
-        startDateTime: convertToUTC(startDateTime, req.timezone),
-        endDateTime: convertToUTC(endDateTime, req.timezone),
-        title,
-        note,
-        location,
-        user: req.user,
-      });
+    const createdUserEvent = await UserEvent.create({
+      startDateTime: convertToUTC(startDateTime, req.timezone),
+      endDateTime: convertToUTC(endDateTime, req.timezone),
+      title,
+      note,
+      location,
+      user: req.user.id,
+    });
 
-      req.user.events.push(createdUserEvent.id);
-      await req.user.save();
-
-      return res.json({
-        status: ResponseStatus.SUCCESS,
-        data: new CreateUserEventResponseDto(createdUserEvent),
-      });
-    }
-
-    repeatUserEvents(req);
+    req.user.events.push(createdUserEvent.id);
+    await req.user.save();
 
     res.json({
       status: ResponseStatus.SUCCESS,
-      data: null,
+      data: new CreateUserEventResponseDto(createdUserEvent),
     });
   },
 );
@@ -182,14 +124,9 @@ export const updateUserEvent = catchAsync(
     );
 
     userEvent.title = updateUserEventDto.title;
-
-    if (updateUserEventDto.note) {
-      userEvent.note = updateUserEventDto.note;
-    }
-
-    if (updateUserEventDto.location) {
-      userEvent.location = updateUserEventDto.location;
-    }
+    userEvent.note = updateUserEventDto.note;
+    userEvent.location = updateUserEventDto.location;
+    userEvent.isPrivate = updateUserEventDto.isPrivate;
 
     const updatedUserEvent = await userEvent.save();
     res.json({
@@ -218,65 +155,5 @@ export const deleteUserEvent = catchAsync(async (req, res, next) => {
   res.json({
     status: ResponseStatus.SUCCESS,
     data: null,
-  });
-});
-
-export const updateRepeatableEvent = catchAsync(async (req, res, next) => {
-  const { repeatableId } = req.params;
-  const userEvent = await UserEvent.findOne({ repeatableId });
-
-  if (!userEvent) {
-    return next(
-      new AppError('User event with provided ID does not exist', 400),
-    );
-  }
-
-  if (!req.user.events.includes(userEvent.id)) {
-    return next(new AppError("You can't delete other peoples' events", 400));
-  }
-
-  const deletedEvents = await UserEvent.find({ repeatableId: repeatableId });
-  const deletedEventIds = deletedEvents.map((event) => event.id);
-
-  await UserEvent.deleteMany({ repeatableId: repeatableId });
-
-  await User.updateOne(
-    { _id: req.user._id },
-    { $pull: { events: { $in: deletedEventIds } } },
-  );
-  repeatUserEvents(req);
-
-  res.json({
-    status: ResponseStatus.SUCCESS,
-    data: null,
-  });
-});
-
-export const deleteRepeatableEvents = catchAsync(async (req, res, next) => {
-  const { repeatableId } = req.params;
-  const userEvent = await UserEvent.findOne({ repeatableId });
-
-  if (!userEvent) {
-    return next(
-      new AppError('User event with provided ID does not exist', 400),
-    );
-  }
-
-  if (!req.user.events.includes(userEvent.id)) {
-    return next(new AppError("You can't delete other peoples' events", 400));
-  }
-
-  const deletedEvents = await UserEvent.find({ repeatableId: repeatableId });
-  const deletedEventIds = deletedEvents.map((event) => event.id);
-
-  await UserEvent.deleteMany({ repeatableId: repeatableId });
-
-  await User.updateOne(
-    { _id: req.user._id },
-    { $pull: { events: { $in: deletedEventIds } } },
-  );
-
-  res.json({
-    status: ResponseStatus.SUCCESS,
   });
 });

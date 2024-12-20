@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsDateString,
   IsNotEmpty,
   IsOptional,
@@ -25,4 +26,8 @@ export class UpdateUserEventDto {
   @IsOptional()
   @IsString()
   location?: string;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isPrivate: boolean;
 }
