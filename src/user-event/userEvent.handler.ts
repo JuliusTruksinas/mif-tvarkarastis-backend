@@ -63,6 +63,7 @@ export const createUserEvent = catchAsync(
       title,
       note,
       location,
+      isPrivate,
     }: CreateUserEventDto = req.body;
 
     if (new Date(startDateTime) >= new Date(endDateTime)) {
@@ -75,6 +76,7 @@ export const createUserEvent = catchAsync(
       title,
       note,
       location,
+      isPrivate,
       user: req.user.id,
     });
 
