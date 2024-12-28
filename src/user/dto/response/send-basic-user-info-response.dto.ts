@@ -3,7 +3,6 @@ import { IUser } from '../../user.types';
 
 export class SendBasicUserInfoResponseDto {
   id: mongoose.Types.ObjectId;
-  email: string;
   firstName: string;
   lastName: string;
   programName: string;
@@ -11,7 +10,6 @@ export class SendBasicUserInfoResponseDto {
 
   constructor(user: IUser) {
     this.id = user._id;
-    this.email = user.email;
     this.firstName = user.firstName;
     this.lastName = user.lastName;
     this.programName = user.programName;

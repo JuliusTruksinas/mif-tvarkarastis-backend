@@ -1,3 +1,4 @@
+import { PreferredNavigationApp } from '../../../domain/navigation';
 import { IUser } from '../../../user/user.types';
 
 export class GetCurrentUserDto {
@@ -10,7 +11,7 @@ export class GetCurrentUserDto {
   course: number;
   group: number;
   subgroup: number;
-  preferredNavigationApp: 'googleMaps' | 'waze';
+  preferredNavigationApp: PreferredNavigationApp;
 
   constructor(user: IUser) {
     this.id = user._id.toString();

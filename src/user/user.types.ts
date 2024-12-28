@@ -1,4 +1,5 @@
 import mongoose, { Document } from 'mongoose';
+import { PreferredNavigationApp } from '../domain/navigation';
 
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
@@ -12,7 +13,7 @@ export interface IUser extends Document {
   group: number;
   subgroup: number;
   resetPasswordToken: string | null;
-  preferredNavigationApp: 'googleMaps' | 'waze';
+  preferredNavigationApp: PreferredNavigationApp;
   events: mongoose.ObjectId[];
   friends: mongoose.ObjectId[];
   sentFriendRequests: mongoose.ObjectId[];
