@@ -12,6 +12,7 @@ export interface IUser extends Document {
   group: number;
   subgroup: number;
   resetPasswordToken: string | null;
+  preferredNavigationApp: 'googleMaps' | 'waze';
   events: mongoose.ObjectId[];
   friends: mongoose.ObjectId[];
   sentFriendRequests: mongoose.ObjectId[];

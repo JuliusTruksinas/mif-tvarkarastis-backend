@@ -10,6 +10,7 @@ export class GetCurrentUserDto {
   course: number;
   group: number;
   subgroup: number;
+  preferredNavigationApp: 'googleMaps' | 'waze';
 
   constructor(user: IUser) {
     this.id = user._id.toString();
@@ -21,5 +22,6 @@ export class GetCurrentUserDto {
     this.course = user.course;
     this.group = user.group;
     this.subgroup = user.subgroup;
+    this.preferredNavigationApp = user.preferredNavigationApp;
   }
 }

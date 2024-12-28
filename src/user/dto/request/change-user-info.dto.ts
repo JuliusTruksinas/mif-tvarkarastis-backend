@@ -55,4 +55,8 @@ export class ChangeUserInfoDto {
   @Min(1)
   @Max(2)
   subgroup: number;
+
+  @IsNotEmpty()
+  @IsString()
+  preferredNavigationApp: string;
 }
