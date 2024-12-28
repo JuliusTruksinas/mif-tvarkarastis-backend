@@ -52,6 +52,12 @@ const userSchema = new mongoose.Schema<IUser>({
     required: false,
     default: null,
   },
+  preferredNavigationApp: {
+    type: String,
+    required: true,
+    enum: ['googleMaps', 'waze'],
+    default: 'googleMaps',
+  },
   events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserEvent' }],
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
   sentFriendRequests: [
