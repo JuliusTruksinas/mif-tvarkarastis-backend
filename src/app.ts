@@ -10,6 +10,7 @@ import lectureEventRoutes from './lecture-event/lectureEvent.routes';
 import friendRoutes from './friend/friend.routes';
 import notificationRoutes from './notifications/notification.routes';
 import { detectTimezone } from './middleware/detectTimeZone';
+import calendarRoutes from './calendar/calendar.routes';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/api/users/friends', userRoutes);
 app.use('/api/lecture-events', lectureEventRoutes);
 app.use('/api/friends', friendRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/calendar', calendarRoutes);
 // TODO: Implament internal cron-job  app.use('/api/vu-data', vuDataRoutes);
 
 app.all('*', (req, res, next) => {

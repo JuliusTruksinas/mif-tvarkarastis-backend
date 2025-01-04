@@ -5,7 +5,7 @@ import AppError from '../utils/appError';
 import { catchAsync } from '../utils/catchAsync';
 import { transformMongoDbObjectId } from '../utils/transformMongoDbObjectId';
 import { GetUserLectureEventsRequestDto } from './dto/request/get-user-lecture-events.dto';
-import { LectureEvent } from './lectureEvent.model';
+import { getUsersLectureEventsQuery } from './lectureEvent.query';
 
 export const getUserLectureEvents = catchAsync(
   async (req: AuthenticatedRequest, res, next) => {
@@ -33,19 +33,19 @@ export const getUserLectureEvents = catchAsync(
       );
     }
 
-    const lectureEvents = await LectureEvent.find()
-      .where('programName')
-      .equals(foundUser.programName)
-      .where('course')
-      .equals(foundUser.course)
-      .where('group')
-      .equals(foundUser.group)
-      .or([{ subgroup: foundUser.subgroup }, { subgroup: null }])
-      .where('startDateTime')
-      .gte(new Date(convertToUTC(startDateTime, req.timezone)).getTime())
-      .where('endDateTime')
-      .lte(new Date(convertToUTC(endDateTime, req.timezone)).getTime())
-      .lean();
+    const fromTimeInMs = new Date(
+      convertToUTC(startDateTime, req.timezone),
+    ).getTime();
+    const toTimeInMs = new Date(
+      convertToUTC(endDateTime, req.timezone),
+    ).getTime();
+
+    const lectureEvents = await getUsersLectureEventsQuery(
+      foundUser,
+      fromTimeInMs,
+      toTimeInMs,
+      { areSelectableLecturesIncluded: true },
+    );
 
     res.json({
       status: 'success',

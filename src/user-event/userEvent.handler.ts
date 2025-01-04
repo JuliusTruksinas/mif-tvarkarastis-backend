@@ -11,6 +11,7 @@ import { convertToUTC } from '../helpers/time';
 import { AuthenticatedRequest } from '../domain/authenticatedRequest';
 import { GetUserLectureEventsRequestDto } from '../lecture-event/dto/request/get-user-lecture-events.dto';
 import { User } from '../user/user.model';
+import { getUsersUserEventsQuery } from './userEvent.query';
 
 export const fetchUserEvents = catchAsync(
   async (req: AuthenticatedRequest, res, next) => {
@@ -38,15 +39,18 @@ export const fetchUserEvents = catchAsync(
       );
     }
 
-    const userEvents = await UserEvent.find()
-      .where('user')
-      .equals(foundUser._id)
-      .where('startDateTime')
-      .gte(new Date(convertToUTC(startDateTime, req.timezone)).getTime())
-      .where('endDateTime')
-      .lte(new Date(convertToUTC(endDateTime, req.timezone)).getTime())
-      .or([{ isPrivate: false }, { user: req.user.id }])
-      .lean();
+    const fromTimeInMs = new Date(
+      convertToUTC(startDateTime, req.timezone),
+    ).getTime();
+    const toTimeInMs = new Date(
+      convertToUTC(endDateTime, req.timezone),
+    ).getTime();
+
+    const userEvents = await getUsersUserEventsQuery(
+      foundUser.id,
+      fromTimeInMs,
+      toTimeInMs,
+    );
 
     res.json({
       status: ResponseStatus.SUCCESS,
