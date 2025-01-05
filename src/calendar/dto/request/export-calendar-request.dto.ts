@@ -1,4 +1,4 @@
-import { IsBoolean, IsDateString, IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsDateString, IsNotEmpty, IsString } from 'class-validator';
 
 export class ExportCalendarRequestDto {
   @IsNotEmpty()
@@ -16,4 +16,8 @@ export class ExportCalendarRequestDto {
   @IsNotEmpty()
   @IsBoolean()
   areSelectableLecturesIncluded: boolean;
+
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
 }

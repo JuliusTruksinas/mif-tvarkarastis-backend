@@ -1,10 +1,19 @@
 import {
   IsBoolean,
   IsDateString,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
+
+export enum OccurrenceTypeEnum {
+  DAY = 'day',
+  WEEK = 'week',
+  MONTH = 'month',
+}
+
+export type OccurrenceType = 'day' | 'week' | 'month';
 
 export class CreateUserEventDto {
   @IsNotEmpty()
@@ -30,4 +39,16 @@ export class CreateUserEventDto {
   @IsNotEmpty()
   @IsBoolean()
   isPrivate: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isRepeatable: boolean;
+
+  @IsOptional()
+  @IsEnum(OccurrenceTypeEnum)
+  occurrenceType: OccurrenceType;
+
+  @IsOptional()
+  @IsDateString()
+  repeatableUntil: string;
 }

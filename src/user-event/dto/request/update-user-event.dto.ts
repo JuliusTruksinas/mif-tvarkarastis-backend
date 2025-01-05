@@ -1,10 +1,15 @@
 import {
   IsBoolean,
   IsDateString,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
+import {
+  RepeatableUserEventUpdateEnum,
+  RepeatableUserEventUpdateType,
+} from '../../userEvent.types';
 
 export class UpdateUserEventDto {
   @IsNotEmpty()
@@ -30,4 +35,11 @@ export class UpdateUserEventDto {
   @IsNotEmpty()
   @IsBoolean()
   isPrivate: boolean;
+
+  @IsOptional()
+  @IsEnum(RepeatableUserEventUpdateEnum)
+  repeatableUserEventUpdateType:
+    | RepeatableUserEventUpdateType
+    | null
+    | undefined;
 }

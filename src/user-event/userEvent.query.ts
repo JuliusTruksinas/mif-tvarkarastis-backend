@@ -2,17 +2,25 @@ import { UserEvent } from './userEvent.model';
 import { IUserEvent } from './userEvent.types';
 
 export const getUsersUserEventsQuery = async (
-  userId: number,
+  userId: string,
   fromTimeInMs: number,
   toTimeInMs: number,
+  isRequestingSelfUserEvents: boolean,
 ) => {
-  return await UserEvent.find()
-    .where('user')
-    .equals(userId)
+  const query = UserEvent.find()
     .where('startDateTime')
     .gte(fromTimeInMs)
     .where('endDateTime')
-    .lte(toTimeInMs)
-    .or([{ isPrivate: false }, { user: userId }])
-    .lean<IUserEvent[]>();
+    .lte(toTimeInMs);
+
+  if (isRequestingSelfUserEvents) {
+    query.where('user').equals(userId);
+  } else {
+    query
+      .where('user')
+      .equals(userId)
+      .and([{ isPrivate: false }]);
+  }
+
+  return await query.lean<IUserEvent[]>();
 };
