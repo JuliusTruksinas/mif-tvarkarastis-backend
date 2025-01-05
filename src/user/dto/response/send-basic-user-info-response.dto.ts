@@ -7,6 +7,7 @@ export class SendBasicUserInfoResponseDto {
   lastName: string;
   programName: string;
   course: number;
+  profilePhotoUrl?: string | null;
 
   constructor(user: IUser) {
     this.id = user._id;
@@ -14,5 +15,6 @@ export class SendBasicUserInfoResponseDto {
     this.lastName = user.lastName;
     this.programName = user.programName;
     this.course = user.course;
+    this.profilePhotoUrl = user.profilePhotoUrl;
   }
 }

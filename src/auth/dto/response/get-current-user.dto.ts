@@ -12,6 +12,7 @@ export class GetCurrentUserDto {
   group: number;
   subgroup: number;
   preferredNavigationApp: PreferredNavigationApp;
+  profilePhotoUrl?: string | null;
 
   constructor(user: IUser) {
     this.id = user._id.toString();
@@ -24,5 +25,6 @@ export class GetCurrentUserDto {
     this.group = user.group;
     this.subgroup = user.subgroup;
     this.preferredNavigationApp = user.preferredNavigationApp;
+    this.profilePhotoUrl = user.profilePhotoUrl;
   }
 }
