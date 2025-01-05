@@ -210,8 +210,12 @@ const updateMultipleUserEvents = async (
 
   const updateUserEventDto: UpdateUserEventDto = req.body;
 
-  const newStartTime = new Date(updateUserEventDto.startDateTime);
-  const newEndTime = new Date(updateUserEventDto.endDateTime);
+  const newStartTime = new Date(
+    convertToUTC(updateUserEventDto.startDateTime, req.timezone),
+  );
+  const newEndTime = new Date(
+    convertToUTC(updateUserEventDto.endDateTime, req.timezone),
+  );
 
   for (const event of eventsToUpdate) {
     const originalStartDate = new Date(event.startDateTime);
