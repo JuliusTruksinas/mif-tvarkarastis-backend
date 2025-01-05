@@ -33,6 +33,11 @@ const userEventSchema = new mongoose.Schema<IUserEvent>({
     required: false,
     default: false,
   },
+  repeatableUserEventsGroupId: {
+    type: String,
+    required: false,
+    default: null,
+  },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
