@@ -113,8 +113,10 @@ const createRepeatableEvents = async (
   const repeatableUserEventsGroupId = uuidv4();
   const events: any[] = [];
 
-  let currentStartDateTime = new Date(startDateTime);
-  let currentEndDateTime = new Date(endDateTime);
+  let currentStartDateTime = new Date(
+    convertToUTC(startDateTime, req.timezone),
+  );
+  let currentEndDateTime = new Date(convertToUTC(endDateTime, req.timezone));
 
   while (startOfDay(currentStartDateTime) <= repeatableUntilDate) {
     events.push({
