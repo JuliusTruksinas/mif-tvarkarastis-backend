@@ -72,6 +72,7 @@ export const changeUserInfo = catchAsync(async (req, res, next) => {
     programName,
     course,
     preferredNavigationApp,
+    profilePhotoUrl,
   }: ChangeUserInfoDto = req.body;
 
   Object.assign(req.user, {
@@ -84,6 +85,7 @@ export const changeUserInfo = catchAsync(async (req, res, next) => {
     programName,
     course,
     preferredNavigationApp,
+    profilePhotoUrl,
     ...(password && { password }),
   });
 

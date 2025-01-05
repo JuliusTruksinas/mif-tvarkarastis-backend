@@ -5,6 +5,7 @@ import {
   MinLength,
   MaxLength,
   IsNumber,
+  IsOptional,
 } from 'class-validator';
 
 export class RegisterDto {
@@ -50,4 +51,8 @@ export class RegisterDto {
   @IsNotEmpty()
   @IsNumber()
   subgroup: number;
+
+  @IsOptional()
+  @IsString()
+  profilePhotoUrl: string;
 }

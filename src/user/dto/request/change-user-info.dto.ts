@@ -59,4 +59,8 @@ export class ChangeUserInfoDto {
   @IsNotEmpty()
   @IsString()
   preferredNavigationApp: string;
+
+  @IsOptional()
+  @IsString()
+  profilePhotoUrl?: string | null;
 }
