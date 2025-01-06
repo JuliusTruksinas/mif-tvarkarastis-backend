@@ -73,7 +73,14 @@ export const changeUserInfo = catchAsync(async (req, res, next) => {
     course,
     preferredNavigationApp,
     profilePhotoUrl,
+    hiddenLectureTitles,
   }: ChangeUserInfoDto = req.body;
+
+  if (req.user?.programName !== programName || req.user?.course !== course) {
+    req.user.hiddenLectureTitles = [];
+  } else {
+    req.user.hiddenLectureTitles = hiddenLectureTitles;
+  }
 
   Object.assign(req.user, {
     firstName,
