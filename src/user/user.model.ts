@@ -62,6 +62,11 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: false,
   },
+  hiddenLectureTitles: {
+    type: [String],
+    required: false,
+    default: [],
+  },
   events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserEvent' }],
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
   sentFriendRequests: [

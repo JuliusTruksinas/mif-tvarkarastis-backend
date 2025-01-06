@@ -14,6 +14,7 @@ export interface IUser extends Document {
   subgroup: number;
   resetPasswordToken: string | null;
   preferredNavigationApp: PreferredNavigationApp;
+  hiddenLectureTitles: string[];
   profilePhotoUrl?: string | null;
   events: mongoose.ObjectId[];
   friends: mongoose.ObjectId[];

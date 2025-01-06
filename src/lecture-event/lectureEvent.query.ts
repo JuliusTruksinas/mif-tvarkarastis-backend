@@ -3,7 +3,7 @@ import { LectureEvent } from './lectureEvent.model';
 import { ILectureEvent } from './lectureEvent.types';
 
 export type GetUsersLectureEventsQueryOptions = {
-  areSelectableLecturesIncluded: boolean;
+  areHiddenLecturesExcluded: boolean;
 };
 
 export const getUsersLectureEventsQuery = async (
@@ -25,12 +25,12 @@ export const getUsersLectureEventsQuery = async (
     .where('endDateTime')
     .lte(toTimeInMs);
 
-  if (!options.areSelectableLecturesIncluded) {
+  if (options.areHiddenLecturesExcluded) {
     lectureEventsQuery.and([
       {
         $or: [
           { lectureTypes: { $elemMatch: { $eq: 'egzaminas' } } },
-          { lectureTypes: { $elemMatch: { $eq: 'privalomasis' } } },
+          { title: { $nin: user.hiddenLectureTitles } },
         ],
       },
     ]);

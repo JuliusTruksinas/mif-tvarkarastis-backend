@@ -8,6 +8,7 @@ import {
   IsOptional,
   Min,
   Max,
+  IsArray,
 } from 'class-validator';
 
 export class ChangeUserInfoDto {
@@ -63,4 +64,8 @@ export class ChangeUserInfoDto {
   @IsOptional()
   @IsString()
   profilePhotoUrl?: string | null;
+
+  @IsNotEmpty()
+  @IsArray()
+  hiddenLectureTitles: string[];
 }

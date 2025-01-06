@@ -16,7 +16,7 @@ export const exportCalendar = catchAsync(
       fromDate,
       toDate,
       areUserEventsIncluded,
-      areSelectableLecturesIncluded,
+      areHiddenLecturesExcluded,
       userId,
     }: ExportCalendarRequestDto = req.body;
     const foundUser = await User.findById(userId);
@@ -48,7 +48,7 @@ export const exportCalendar = catchAsync(
       foundUser,
       fromTimeInMs,
       toTimeInMs,
-      { areSelectableLecturesIncluded },
+      { areHiddenLecturesExcluded },
     );
 
     const isRequestingSelfUserEvents = userId === req.user.id;

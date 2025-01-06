@@ -15,7 +15,7 @@ export class ExportCalendarRequestDto {
 
   @IsNotEmpty()
   @IsBoolean()
-  areSelectableLecturesIncluded: boolean;
+  areHiddenLecturesExcluded: boolean;
 
   @IsNotEmpty()
   @IsString()

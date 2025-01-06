@@ -12,6 +12,7 @@ export class GetCurrentUserDto {
   group: number;
   subgroup: number;
   preferredNavigationApp: PreferredNavigationApp;
+  hiddenLectureTitles: string[];
   profilePhotoUrl?: string | null;
 
   constructor(user: IUser) {
@@ -25,6 +26,7 @@ export class GetCurrentUserDto {
     this.group = user.group;
     this.subgroup = user.subgroup;
     this.preferredNavigationApp = user.preferredNavigationApp;
+    this.hiddenLectureTitles = user.hiddenLectureTitles;
     this.profilePhotoUrl = user.profilePhotoUrl;
   }
 }
